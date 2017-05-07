@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.udacity.stockhawk.QuoteHistoricActivity;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
@@ -46,7 +48,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onClick(String symbol) {
+
         Timber.d("Symbol clicked: %s", symbol);
+        Intent historicAct = new Intent(this, QuoteHistoricActivity.class);
+        historicAct.putExtra(getString(R.string.pref_stocks_key),symbol);
+        startActivity(historicAct);
     }
 
     @Override
