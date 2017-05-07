@@ -38,7 +38,7 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <activity android:name=".QuoteHistoricActivity"></activity>
+        <activity android:name=".ui.QuoteHistoricActivity"></activity>
     </application>
 
 </manifest>

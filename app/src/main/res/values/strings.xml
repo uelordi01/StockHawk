@@ -3,7 +3,7 @@
 
     <string name="pref_stocks_initialized_key" translatable="false">initialized</string>
 
-    <string name="pref_stocks_key">stocks</string>
+    <string name="pref_stocks_key" translatable="false">stocks</string>
 
 
     <string name="pref_display_mode_key">displayMode</string>
@@ -16,7 +16,7 @@
     <string name="default_stocks_apple">AAPL</string>
     <string name="default_stocks_microsoft">MSFT</string>
     <string name="default_stocks_facebook">FB</string>
-    <string name="current_stocks_key" translatable="false">current_stock_key</string>
+    <!--<string name="current_stocks_key" translatable="false">current_stock_key</string>-->
 
     <string name="action_change_units">@string/pref_display_mode_key</string>
 
