@@ -37,6 +37,10 @@ public final class QuoteSyncJob {
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 2;
 
+    //TODO PUT HERE THE ANNOTATIONS OF THE INTDEF LIKE A ENUM (WITH THE INTERVAL)
+    //TODO so you have to decide your ranges in the period:
+
+
     private QuoteSyncJob() {
     }
 
@@ -81,7 +85,7 @@ public final class QuoteSyncJob {
 
                 // WARNING! Don't request historical data for a stock that doesn't exist!
                 // The request will hang forever X_x
-                List<HistoricalQuote> history = stock.getHistory(from, to, Interval.WEEKLY);
+                List<HistoricalQuote> history = stock.getHistory(from, to, Interval.MONTHLY);
 
                 StringBuilder historyBuilder = new StringBuilder();
 
