@@ -11,6 +11,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.graphic.ChartHandler;
 
 import java.util.ArrayList;
@@ -74,12 +77,29 @@ public class QuoteHistoricActivity extends AppCompatActivity
 //    }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.quotes_historic_settings, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            setTitle("holakease");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String symbol = args.getString(getString(R.string.pref_stocks_key));
+        String    symbol = args.getString(getString(R.string.pref_stocks_key));
         //return null;
         return new CursorLoader(this,
-                Contract.Quote.makeUriForStock(symbol),
-                Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
+                Contract.HistoricQuote.makeUriForQuotes(symbol),
+                Contract.HistoricQuote.QUOTE_COLUMNS.toArray(new String[]{}),
                 null, null, null);
     }
 
@@ -90,7 +110,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
            // error.setVisibility(View.GONE)
             for(int i=0;i<data.getCount();i++) {
                 data.moveToPosition(i);
-                int symbolColumn = data.getColumnIndex(Contract.Quote.COLUMN_HISTORY);
+                int symbolColumn = data.getColumnIndex(Contract.HistoricQuote.COLUMN_HISTORIC);
                 result = data.getString(symbolColumn);
                 //historicDebugResult.setText(restult);
             }

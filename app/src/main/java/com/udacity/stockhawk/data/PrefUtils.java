@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -86,6 +87,13 @@ public final class PrefUtils {
         }
 
         editor.apply();
+    }
+    @SuppressWarnings("ResourceType")
+    static public @QuoteSyncJob.TimeInterval
+    int getLocationStatus(Context c){
+        //SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        //return sp.getInt(c.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+        return 0;
     }
 
 }

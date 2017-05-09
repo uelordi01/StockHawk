@@ -34,4 +34,15 @@
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
 
+    <!--setting strings-->
+    <string name="action_settings">Interval</string>
+    <string name="preference_interval_label">Time Interval</string>
+    <string name="preference_interval_month_label">Monthly</string>
+    <string name="preference_interval_week_label">Weekly</string>
+    <string name="preference_interval_day_label">Dayly</string>
+    <string name="preference_interval_key" translatable="false">interval_key</string>
+    <string name="preference_interval_month_value" translatable="false">month</string>
+    <string name="preference_interval_week_value" translatable="false">week</string>
+    <string name="preference_interval_day_value" translatable="false">day</string>
+
 </resources>

@@ -15,6 +15,8 @@ public class StockProvider extends ContentProvider {
 
     private static final int QUOTE = 100;
     private static final int QUOTE_FOR_SYMBOL = 101;
+    private static final int HISTORIC = 200;
+    private static final int HISTORIC_FOR_SYMBOL = 201;
 
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
@@ -24,6 +26,8 @@ public class StockProvider extends ContentProvider {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE, QUOTE);
         matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE_WITH_SYMBOL, QUOTE_FOR_SYMBOL);
+        matcher.addURI(Contract.AUTHORITY,Contract.PATH_HISTORIC,HISTORIC);
+        matcher.addURI(Contract.AUTHORITY,Contract.PATH_HISTORIC_WITH_QUOTE,HISTORIC_FOR_SYMBOL);
         return matcher;
     }
 
@@ -65,6 +69,18 @@ public class StockProvider extends ContentProvider {
                 );
 
                 break;
+            case HISTORIC_FOR_SYMBOL:
+                returnCursor = db.query(
+                        Contract.HistoricQuote.TABLE_NAME,
+                        projection,
+                        Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL + " = ?",
+                        new String[]{Contract.Quote.getStockFromUri(uri)},
+                        null,
+                        null,
+                        sortOrder
+                );
+
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
         }
@@ -90,14 +106,25 @@ public class StockProvider extends ContentProvider {
         Uri returnUri;
 
         switch (uriMatcher.match(uri)) {
-            case QUOTE:
-                db.insert(
+            case QUOTE: {
+                long result = db.insert(
                         Contract.Quote.TABLE_NAME,
                         null,
                         values
                 );
                 returnUri = Contract.Quote.URI;
                 break;
+            }
+            case HISTORIC:
+            {
+                long result =  db.insert(
+                        Contract.HistoricQuote.TABLE_NAME,
+                        null,
+                        values
+                );
+                returnUri = Contract.HistoricQuote.URI;
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
         }
@@ -159,11 +186,12 @@ public class StockProvider extends ContentProvider {
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
 
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
-
+        int returnCount = 0;
+        Context context = getContext();
         switch (uriMatcher.match(uri)) {
             case QUOTE:
                 db.beginTransaction();
-                int returnCount = 0;
+
                 try {
                     for (ContentValues value : values) {
                         db.insert(
@@ -177,12 +205,31 @@ public class StockProvider extends ContentProvider {
                     db.endTransaction();
                 }
 
-                Context context = getContext();
+                context = getContext();
                 if (context != null) {
                     context.getContentResolver().notifyChange(uri, null);
                 }
 
                 return returnCount;
+            case HISTORIC:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        db.insert(
+                                Contract.HistoricQuote.TABLE_NAME,
+                                null,
+                                value
+                        );
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+
+                if (context != null) {
+                    context.getContentResolver().notifyChange(uri, null);
+                }
             default:
                 return super.bulkInsert(uri, values);
         }
