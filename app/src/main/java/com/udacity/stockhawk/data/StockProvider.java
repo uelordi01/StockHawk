@@ -62,7 +62,7 @@ public class StockProvider extends ContentProvider {
                         Contract.Quote.TABLE_NAME,
                         projection,
                         Contract.Quote.COLUMN_SYMBOL + " = ?",
-                        new String[]{Contract.Quote.getStockFromUri(uri)},
+                        new String[]{Contract.HistoricQuote.getIDFromStock(uri)},
                         null,
                         null,
                         sortOrder
@@ -163,6 +163,10 @@ public class StockProvider extends ContentProvider {
                         selectionArgs
                 );
                 break;
+            case HISTORIC:
+
+                //rowsDeleted = db.delete(Contract.HistoricQuote.TABLE_NAME,selection,selectionArgs);
+                db.execSQL("TRUNCATE TABLE "+Contract.HistoricQuote.TABLE_NAME);
             default:
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
         }

@@ -56,7 +56,7 @@ public final class Contract {
         public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH_HISTORIC).build();
 
         public static final String COLUMN_HISTORIC = "historic_dataset";
-        public static final String COLUMN_QUOTE_SYMBOL = "quote_id";
+        public static final String COLUMN_QUOTE_SYMBOL = "quote_symbol";
         public static final int POSITION_ID = 0;
         public static final int POSITION_QUOTE_SYMBOL = 1;
         public static final int POSITION_HISTORIC_DATASET = 2;

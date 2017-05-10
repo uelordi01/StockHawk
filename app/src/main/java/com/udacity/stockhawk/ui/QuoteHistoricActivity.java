@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
@@ -29,6 +30,7 @@ import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.graphic.ChartHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class QuoteHistoricActivity extends AppCompatActivity
@@ -38,8 +40,12 @@ public class QuoteHistoricActivity extends AppCompatActivity
     TextView historicDebugResult;
     ChartHandler stockChart;
     FrameLayout mGraphRootLayout;
-//    LineChart mChart;
+    String [] graphOptions;
+    private static final int NUMBER_OF_OPTIONS = 3;
+    //private static int mSelectionCounter = 0;
 
+//    LineChart mChart;
+    String mgraphSelectedOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +54,12 @@ public class QuoteHistoricActivity extends AppCompatActivity
 //        InitInterface();
         Intent parent_activity = getIntent();
         String stockNameKey = getString(R.string.pref_stocks_key);
+        currentStockName = parent_activity.getStringExtra(stockNameKey);
+
         historicDebugResult = (TextView) findViewById(R.id.historic_result);
         mGraphRootLayout = (FrameLayout)findViewById(R.id.historic_root_layout);
-        currentStockName=parent_activity.getStringExtra(stockNameKey);
-        Bundle contentBundle = new Bundle();
-        contentBundle.putString(stockNameKey,currentStockName);
-        getSupportLoaderManager().initLoader(HISTORIC_LOADER,contentBundle,this);
+
+        startLoader();
     }
 //    private void InitInterface() {
 //        Intent parent_activity = getIntent();
@@ -86,39 +92,62 @@ public class QuoteHistoricActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            setTitle("holakease");
-            return true;
-        }
+            //setTitle("holakease");
+            int index = getOptionIndex(PrefUtils.getCurrentQutoesChartOption(this));
+            if(index < 2) {
+                 index++;
+            } else {
+                index = 0;
+            }
+                mgraphSelectedOption = graphOptions[index];
+                item.setTitle(mgraphSelectedOption);
+                PrefUtils.setCurrentQuotesChartOption(this,mgraphSelectedOption);
+                Bundle b = new Bundle();
+                b.putString(getString(R.string.preference_interval_key),currentStockName);
+                startLoader();
+            }
+            //if(NUMBER_OF_OPTIONS )
+            //setCurrentQuotesChartOption()
         return super.onOptionsItemSelected(item);
-    }
 
+    }
+    public int getOptionIndex(String option) {
+       for(int i=0;i<graphOptions.length;i++) {
+           if(option.equals(graphOptions[i])){
+               return i;
+           }
+       }
+       return 0;
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String    symbol = args.getString(getString(R.string.pref_stocks_key));
+        // String    symbol = args.getString(getString(R.string.pref_stocks_key));
         //return null;
         return new CursorLoader(this,
-                Contract.HistoricQuote.makeUriForQuotes(symbol),
+                Contract.HistoricQuote.makeUriForQuotes(currentStockName),
                 Contract.HistoricQuote.QUOTE_COLUMNS.toArray(new String[]{}),
                 null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        String result ="";
+        List<String> result= new ArrayList<>();
+        mgraphSelectedOption = PrefUtils.getCurrentQutoesChartOption(this);
+        int selectionIndex = -1;
         if (data.getCount() != 0) {
            // error.setVisibility(View.GONE)
             for(int i=0;i<data.getCount();i++) {
                 data.moveToPosition(i);
                 int symbolColumn = data.getColumnIndex(Contract.HistoricQuote.COLUMN_HISTORIC);
-                result = data.getString(symbolColumn);
+                result.add(data.getString(symbolColumn));
                 //historicDebugResult.setText(restult);
             }
 
         }
-
+        selectionIndex=getOptionIndex(mgraphSelectedOption);
         stockChart = new ChartHandler(getApplicationContext(),currentStockName);
-        stockChart.setData(result);
+        stockChart.setData(result.get(selectionIndex));
         stockChart.showGraph(mGraphRootLayout);
        /*  int mFillColor = Color.argb(150, 51, 181, 229);
         mChart = (LineChart)findViewById(R.id.quote_chart);
@@ -219,4 +248,19 @@ public class QuoteHistoricActivity extends AppCompatActivity
 //            mChart.setData(data);
 //        }
 //    }
+public void startLoader()
+{
+
+    Bundle contentBundle = new Bundle();
+    graphOptions=getResources().getStringArray(R.array.pref_interval_option_values);
+    //String stockNameKey;
+    //contentBundle.putString(stockNameKey,currentStockName);
+    LoaderManager loaderManager = getSupportLoaderManager();
+    Loader<String> historic_loader = loaderManager.getLoader(HISTORIC_LOADER);
+    if ( historic_loader == null ) {
+        getSupportLoaderManager().initLoader(HISTORIC_LOADER, null, this);
+    } else {
+        loaderManager.restartLoader(HISTORIC_LOADER, null, this);
+    }
+}
 }

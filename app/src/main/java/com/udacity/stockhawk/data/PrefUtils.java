@@ -88,6 +88,19 @@ public final class PrefUtils {
 
         editor.apply();
     }
+    public static String getCurrentQutoesChartOption(Context context){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(context.getString(R.string.preference_interval_key),
+                            context.getString(R.string.preference_interval_week_value));
+    }
+    public static void setCurrentQuotesChartOption(Context context,String option){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putString(context.getString(R.string.preference_interval_key),option);
+        editor.apply();
+
+
+    }
     @SuppressWarnings("ResourceType")
     static public @QuoteSyncJob.TimeInterval
     int getLocationStatus(Context c){
