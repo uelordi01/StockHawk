@@ -31,6 +31,7 @@ import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
 
+
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
@@ -62,10 +63,12 @@ public final class QuoteSyncJob {
     static void getQuotes(Context context) {
 
         Timber.d("Running sync job");
-        Interval [] theIntervals={Interval.MONTHLY,Interval.WEEKLY,Interval.DAILY};
-        Calendar from = Calendar.getInstance();
-        Calendar to = Calendar.getInstance();
-        from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
+        Interval [] theIntervals={Interval.MONTHLY,Interval.DAILY};//,Interval.DAILY};
+        int [] calendar_from = {Calendar.YEAR,Calendar.MONTH};//,Calendar.DAY_OF_WEEK};
+
+
+        //from.add(Calendar.MONTH,-1);
+        //from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
         try {
 
@@ -112,6 +115,9 @@ public final class QuoteSyncJob {
 
                 for(int j=0;j<theIntervals.length;j++) {
                     ContentValues historicValue = new ContentValues();
+                    Calendar from = Calendar.getInstance();
+                    Calendar to = Calendar.getInstance();
+                    from.add(calendar_from[j],-1);
                     List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
                     StringBuilder historyBuilder = new StringBuilder();
 
