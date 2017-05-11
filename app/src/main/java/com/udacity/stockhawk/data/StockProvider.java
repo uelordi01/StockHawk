@@ -240,4 +240,25 @@ public class StockProvider extends ContentProvider {
 
 
     }
+   /* private Cursor getMoviesFromReferenceTable(String tableName, String[] projection, String selection,
+                                               String[] selectionArgs, String sortOrder) {
+
+        SQLiteQueryBuilder sqLiteQueryBuilder = new SQLiteQueryBuilder();
+
+        // tableName INNER JOIN movies ON tableName.movie_id = movies._id
+        sqLiteQueryBuilder.setTables(
+                tableName + " INNER JOIN " + MoviesContract.MovieEntry.TABLE_NAME +
+                        " ON " + tableName + "." + MoviesContract.COLUMN_MOVIE_ID_KEY +
+                        " = " + MoviesContract.MovieEntry.TABLE_NAME + "." + MoviesContract.MovieEntry._ID
+        );
+
+        return sqLiteQueryBuilder.query(dbHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }*/
 }

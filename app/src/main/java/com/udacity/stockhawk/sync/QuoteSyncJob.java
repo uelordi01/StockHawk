@@ -129,6 +129,7 @@ public final class QuoteSyncJob {
                     }
                     historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
                                                                             symbol);
+                    historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL,theIntervals[j].getTag());
                     historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
                                                     historyBuilder.toString());
                     historicCVs.add(historicValue);

@@ -143,12 +143,14 @@ public class QuoteHistoricActivity extends AppCompatActivity
                 result.add(data.getString(symbolColumn));
                 //historicDebugResult.setText(restult);
             }
-
         }
         selectionIndex=getOptionIndex(mgraphSelectedOption);
-        stockChart = new ChartHandler(getApplicationContext(),currentStockName);
-        stockChart.setData(result.get(selectionIndex));
-        stockChart.showGraph(mGraphRootLayout);
+        if(selectionIndex < result.size()) {
+            stockChart = new ChartHandler(getApplicationContext(),currentStockName);
+            stockChart.setData(result.get(selectionIndex));
+            stockChart.showGraph(mGraphRootLayout);
+        }
+
        /*  int mFillColor = Color.argb(150, 51, 181, 229);
         mChart = (LineChart)findViewById(R.id.quote_chart);
         mChart.setBackgroundColor(Color.WHITE);

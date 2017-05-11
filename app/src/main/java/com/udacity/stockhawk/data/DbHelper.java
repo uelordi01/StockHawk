@@ -1,17 +1,21 @@
 package com.udacity.stockhawk.data;
 
 import android.content.Context;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.udacity.stockhawk.data.Contract.Quote;
+
+import timber.log.Timber;
 
 
 class DbHelper extends SQLiteOpenHelper {
 
 
     private static final String NAME = "StockHawk.db";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
 
     DbHelper(Context context) {
@@ -27,13 +31,22 @@ class DbHelper extends SQLiteOpenHelper {
                 + Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, "
                 + Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, "
                 + "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
+        Timber.d("the table "+Quote.TABLE_NAME+"\n"+quoteTable);
         String historicTable = "CREATE TABLE " + Contract.HistoricQuote.TABLE_NAME + " ("
-                + Contract.HistoricQuote._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL + " TEXT NOT NULL, "
-                + Contract.HistoricQuote.COLUMN_HISTORIC + " text NOT NULL); ";
-
+                + Contract.HistoricQuote._ID +"INTEGER PRIMARY KEY,"
+                + Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL + " TEXT NOT NULL , "
+                + Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL + " TEXT NOT NULL, "
+                + Contract.HistoricQuote.COLUMN_HISTORIC + " text NOT NULL,"
+                + " UNIQUE ("+Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL+", "
+                + Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL+") ON CONFLICT REPLACE"+
+                " ); ";
+        Timber.d("the table "+Contract.HistoricQuote.TABLE_NAME+"\n"+historicTable);
+        try {
         db.execSQL(quoteTable);
         db.execSQL(historicTable);
+        } catch(SQLException e) {
+            Timber.d("SQLITE ERROR -> "+ e.getMessage());
+        }
 
     }
 
