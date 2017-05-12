@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.udacity.stockhawk.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -24,22 +25,21 @@ import java.util.Date;
  */
 
 public class ChartHandler {
-    private static ChartHandler instance = null;
-
-//    public ChartHandler getInstance() {
-//        if(instance == null) {
-//            instance = new ChartHandler();
-//        }
-//        return instance;
-//    }
     LineChart mChart;
     String mChartName;
+    static String mIntervalTime;
+    String [] optionList;
+    Context mContext;
+
     public ChartHandler(Context context, String chartName) {
         mChart = new LineChart(context);
         mChartName = chartName;
+        mContext = context;
+        // optionList = context.getResources().getStringArray(R.array.pref_interval_option_values);
         configureChartLayout();
     }
-    public void setData(String parseString) {
+    public void setData(String parseString, String interval_key) {
+        mIntervalTime = interval_key;
         addData(parseString);
     }
     private void configureChartLayout(){
@@ -85,10 +85,7 @@ public class ChartHandler {
         xAxis.setDrawGridLines(false);
         setLabels(labels);
 
-
-        // set this to false to disable the drawing of highlight indicator (lines)
         set1.setDrawHighlightIndicators(true);
-
         set1.setCircleColor(Color.BLUE);
         LineData ln =new LineData(set1);
         mChart.setData(ln);
@@ -98,23 +95,33 @@ public class ChartHandler {
         mChart.invalidate();
     }
 
-    private static String getDateFromTimestamp(@NotNull long timestamp) {
+    private static String getDateFromTimestamp(@NotNull long timestamp,
+                                               @NotNull final int interval_key) {
        /* Timestamp dateTimestamp = new Timestamp(timestamp);
         Date date = new Date(dateTimestamp.getTime());*/
         //return date.toString();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
-        //return cal.get(Calendar.YEAR);
-        return String.valueOf(cal.get(Calendar.YEAR));
+        int key_value = cal.get(interval_key);
+        return String.valueOf(key_value);
     }
     private void setLabels(String [] labels) {
         final String []date_labels = labels;
+        int aux_option = 0;
+        if(mIntervalTime.equals(mContext.getString(R.string.preference_interval_month_value))) {
+            aux_option = Calendar.MONTH;
+        }
+        if(mIntervalTime.equals(mContext.getString(R.string.preference_interval_day_value))) {
+            aux_option = Calendar.DAY_OF_MONTH;
+        }
+        final int option = aux_option;
         if(labels.length>0) {
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
-                    return getDateFromTimestamp(Long.parseLong(date_labels[(int) value]));
+                    return getDateFromTimestamp(Long.parseLong(date_labels[(int) value]),
+                            option);
                 }
             };
             XAxis xAxis = mChart.getXAxis();

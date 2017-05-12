@@ -91,7 +91,7 @@ public final class PrefUtils {
     public static String getCurrentQutoesChartOption(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(context.getString(R.string.preference_interval_key),
-                            context.getString(R.string.preference_interval_week_value));
+                            context.getString(R.string.preference_interval_month_value));
     }
     public static void setCurrentQuotesChartOption(Context context,String option){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

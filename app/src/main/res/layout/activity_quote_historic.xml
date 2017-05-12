@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/historic_root_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.udacity.stockhawk.ui.QuoteHistoricActivity">
+    <!--@BindView(R.id.symbol)-->
+    <!--TextView symbol;-->
 
+    <!--@BindView(R.id.price)-->
+    <!--TextView price;-->
 
+    <!--@BindView(R.id.change)-->
+    <!--TextView change;-->
 
+<android.support.constraint.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="30">
+<TextView
+    android:id="@+id/symbol"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    />
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/change"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
+</android.support.constraint.ConstraintLayout>
+
+<FrameLayout
+    android:id="@+id/historic_root_layout"
+    android:layout_width="match_parent"
+    android:layout_weight="70"
+    android:layout_height="0dp"></FrameLayout>
     <!--<com.github.mikephil.charting.charts.LineChart-->
         <!--android:id="@+id/quote_chart"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--tools:layout_editor_absoluteY="8dp"-->
         <!--tools:layout_editor_absoluteX="8dp" />-->
-    <TextView
-        android:id="@+id/historic_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="82dp"
-        tools:layout_editor_absoluteY="52dp" />
-</FrameLayout>
+</LinearLayout>

@@ -41,8 +41,8 @@
     <string name="preference_interval_week_label">Weekly</string>
     <string name="preference_interval_day_label">Dayly</string>
     <string name="preference_interval_key" translatable="false">interval_key</string>
-    <string name="preference_interval_month_value" translatable="false">month</string>
-    <string name="preference_interval_week_value" translatable="false">week</string>
-    <string name="preference_interval_day_value" translatable="false">day</string>
+    <string name="preference_interval_month_value" translatable="false">m</string>
+    <!--<string name="preference_interval_week_value" translatable="false">w</string>-->
+    <string name="preference_interval_day_value" translatable="false">d</string>
 
 </resources>
