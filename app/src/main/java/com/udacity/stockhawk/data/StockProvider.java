@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,27 +57,12 @@ public class StockProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
-
-            case QUOTE_FOR_SYMBOL:
-                returnCursor = db.query(
-                        Contract.Quote.TABLE_NAME,
+            case HISTORIC_FOR_SYMBOL:
+                returnCursor = getGraphInformatinoFromReferenceTable(
+                        Contract.HistoricQuote.TABLE_NAME,
                         projection,
                         Contract.Quote.COLUMN_SYMBOL + " = ?",
                         new String[]{Contract.HistoricQuote.getIDFromStock(uri)},
-                        null,
-                        null,
-                        sortOrder
-                );
-
-                break;
-            case HISTORIC_FOR_SYMBOL:
-                returnCursor = db.query(
-                        Contract.HistoricQuote.TABLE_NAME,
-                        projection,
-                        Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL + " = ?",
-                        new String[]{Contract.Quote.getStockFromUri(uri)},
-                        null,
-                        null,
                         sortOrder
                 );
 
@@ -240,16 +226,14 @@ public class StockProvider extends ContentProvider {
 
 
     }
-   /* private Cursor getMoviesFromReferenceTable(String tableName, String[] projection, String selection,
+    private Cursor getGraphInformatinoFromReferenceTable(String tableName, String[] projection, String selection,
                                                String[] selectionArgs, String sortOrder) {
 
         SQLiteQueryBuilder sqLiteQueryBuilder = new SQLiteQueryBuilder();
-
-        // tableName INNER JOIN movies ON tableName.movie_id = movies._id
         sqLiteQueryBuilder.setTables(
-                tableName + " INNER JOIN " + MoviesContract.MovieEntry.TABLE_NAME +
-                        " ON " + tableName + "." + MoviesContract.COLUMN_MOVIE_ID_KEY +
-                        " = " + MoviesContract.MovieEntry.TABLE_NAME + "." + MoviesContract.MovieEntry._ID
+                tableName + " INNER JOIN " + Contract.Quote.TABLE_NAME +
+                        " ON " + tableName + "." + Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL +
+                        " = " +Contract.Quote.TABLE_NAME + "." + Contract.Quote.COLUMN_SYMBOL
         );
 
         return sqLiteQueryBuilder.query(dbHelper.getReadableDatabase(),
@@ -260,5 +244,5 @@ public class StockProvider extends ContentProvider {
                 null,
                 sortOrder
         );
-    }*/
+    }
 }

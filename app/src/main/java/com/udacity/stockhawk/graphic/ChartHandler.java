@@ -16,6 +16,8 @@ import com.udacity.stockhawk.R;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -95,33 +97,35 @@ public class ChartHandler {
         mChart.invalidate();
     }
 
-    private static String getDateFromTimestamp(@NotNull long timestamp,
-                                               @NotNull final int interval_key) {
-       /* Timestamp dateTimestamp = new Timestamp(timestamp);
-        Date date = new Date(dateTimestamp.getTime());*/
-        //return date.toString();
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
-        int key_value = cal.get(interval_key);
-        return String.valueOf(key_value);
-    }
+    private String getDateFromTimestamp(@NotNull long timestamp,@NotNull Context context,
+                                               @NotNull String option) {
+            final  String[] months = new DateFormatSymbols().getMonths();
+            Calendar cal = Calendar.getInstance();
+            String message ="";
+            cal.setTimeInMillis(timestamp);
+            if(option.equals(context.getString(R.string.preference_interval_month_value))) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+                String formattedDate = sdf.format(timestamp);
+                message = months[ cal.get(Calendar.MONTH)].substring(0,3) + formattedDate;
+                //message =  +" "+ cal.get(Calendar.YEAR);
+            }
+            if(option.equals(context.getString(R.string.preference_interval_day_value))) {
+                message = ""+cal.get(Calendar.DAY_OF_MONTH)+" "+ months[cal.get(Calendar.MONTH)];
+            }
+
+            return message;
+        }
+
     private void setLabels(String [] labels) {
         final String []date_labels = labels;
-        int aux_option = 0;
-        if(mIntervalTime.equals(mContext.getString(R.string.preference_interval_month_value))) {
-            aux_option = Calendar.MONTH;
-        }
-        if(mIntervalTime.equals(mContext.getString(R.string.preference_interval_day_value))) {
-            aux_option = Calendar.DAY_OF_MONTH;
-        }
-        final int option = aux_option;
         if(labels.length>0) {
             IAxisValueFormatter formatter = new IAxisValueFormatter() {
 
                 @Override
                 public String getFormattedValue(float value, AxisBase axis) {
+
                     return getDateFromTimestamp(Long.parseLong(date_labels[(int) value]),
-                            option);
+                            mContext,mIntervalTime);
                 }
             };
             XAxis xAxis = mChart.getXAxis();
