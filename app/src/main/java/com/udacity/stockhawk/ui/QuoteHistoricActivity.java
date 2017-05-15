@@ -73,8 +73,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            //setTitle("holakease");
-            int index = getOptionIndex(PrefUtils.getCurrentQutoesChartOption(this));
+            int index = getOptionIndex(PrefUtils.getCurrentQuotesChartPref(this));
             if(index < graphOptions.length-1) {
                  index++;
             } else {
@@ -82,7 +81,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
             }
                 mgraphSelectedOption = graphOptions[index];
                 item.setTitle(graphOptionsLabels[index]);
-                PrefUtils.setCurrentQuotesChartOption(this,mgraphSelectedOption);
+                PrefUtils.setCurrentQuotesChartPref(this,mgraphSelectedOption);
                 startLoader();
             }
         return super.onOptionsItemSelected(item);
@@ -109,9 +108,9 @@ public class QuoteHistoricActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mQuoteData = new QuoteData();
+         mQuoteData = new QuoteData();
         int rowsCounted = mQuoteData.updateCursorData(data,this);
-        mgraphSelectedOption = PrefUtils.getCurrentQutoesChartOption(this);
+        mgraphSelectedOption = PrefUtils.getCurrentQuotesChartPref(this);
         int selectionIndex=getOptionIndex(mgraphSelectedOption);
         if(selectionIndex < rowsCounted) {
             stockChart = new ChartHandler(getApplicationContext(),currentStockName);
@@ -126,8 +125,8 @@ public class QuoteHistoricActivity extends AppCompatActivity
 
     }
     public void startLoader() {
-        graphOptions  = getResources().getStringArray(R.array.pref_interval_option_values);
-        graphOptionsLabels = getResources().getStringArray(R.array.pref_interval_option_labels);
+        graphOptions  = getResources().getStringArray(R.array.pref_graph_option_values);
+        graphOptionsLabels = getResources().getStringArray(R.array.pref_graph_option_labels);
         LoaderManager loaderManager = getSupportLoaderManager();
         Loader<String> historic_loader = loaderManager.getLoader(HISTORIC_LOADER);
         if ( historic_loader == null ) {

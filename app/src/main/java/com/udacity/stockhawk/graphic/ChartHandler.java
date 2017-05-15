@@ -42,7 +42,11 @@ public class ChartHandler {
     }
     public void setData(String parseString, String interval_key) {
         mIntervalTime = interval_key;
-        addData(parseString);
+        //todo adde here a exception when the parse string is out:
+        if(parseString != null) {
+            addData(parseString);
+        }
+
     }
     private void configureChartLayout(){
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
@@ -104,13 +108,14 @@ public class ChartHandler {
             Calendar cal = Calendar.getInstance();
             String message ="";
             cal.setTimeInMillis(timestamp);
-            if(option.equals(context.getString(R.string.preference_interval_month_value))) {
+            if(option.equals(context.getString(R.string.preference_graph_year_value))) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yy"); // Just the year, with 2 digits
                 String formattedDate = sdf.format(timestamp);
                 message = months[ cal.get(Calendar.MONTH)].substring(0,3) + formattedDate;
                 //message =  +" "+ cal.get(Calendar.YEAR);
             }
-            if(option.equals(context.getString(R.string.preference_interval_day_value))) {
+            if(option.equals(context.getString(R.string.preference_graph_month_value)) ||
+                    option.equals(context.getString(R.string.preference_graph_week_value))   ) {
                 message = ""+cal.get(Calendar.DAY_OF_MONTH)+" "+ months[cal.get(Calendar.MONTH)];
             }
 

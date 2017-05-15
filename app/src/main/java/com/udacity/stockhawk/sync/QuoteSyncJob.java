@@ -68,7 +68,7 @@ public final class QuoteSyncJob {
         Timber.d("Running sync job");
         Interval [] theIntervals={Interval.MONTHLY,Interval.DAILY,Interval.DAILY};//,Interval.DAILY};
         int [] calendar_from = {Calendar.YEAR,Calendar.MONTH, Calendar.WEEK_OF_MONTH};//,Calendar.DAY_OF_WEEK};
-
+        String [] graphOptionsValues = context.getResources().getStringArray(R.array.pref_graph_option_values);
 
         //from.add(Calendar.MONTH,-1);
         //from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
@@ -132,7 +132,8 @@ public final class QuoteSyncJob {
                     }
                     historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
                                                                             symbol);
-                    historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL,theIntervals[j].getTag());
+                    historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
+                            graphOptionsValues[j]);
                     historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
                                                     historyBuilder.toString());
                     historicCVs.add(historicValue);

@@ -88,18 +88,22 @@ public final class PrefUtils {
 
         editor.apply();
     }
-    public static String getCurrentQutoesChartOption(Context context){
+    public static String getCurrentQuotesChartPref(Context context){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(context.getString(R.string.preference_interval_key),
-                            context.getString(R.string.preference_interval_month_value));
+        return sp.getString(context.getString(R.string.preference_graph_mode_key),
+                            context.getString(R.string.preference_graph_week_value));
     }
-    public static void setCurrentQuotesChartOption(Context context,String option){
+    public static void setCurrentQuotesChartPref(Context context,String option){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor=sp.edit();
-        editor.putString(context.getString(R.string.preference_interval_key),option);
+        editor.putString(context.getString(R.string.preference_graph_mode_key),option);
         editor.apply();
-
-
+    }
+    public String [] getChartVisualizationOptionValues(Context context){
+        return context.getResources().getStringArray(R.array.pref_graph_option_values);
+    }
+    public String [] getChartVisualizationOptionLabels(Context context){
+        return context.getResources().getStringArray(R.array.pref_graph_option_labels);
     }
     @SuppressWarnings("ResourceType")
     static public @QuoteSyncJob.TimeInterval

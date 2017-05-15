@@ -55,7 +55,7 @@ public final class Contract {
         public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH_HISTORIC).build();
 
         public static final String COLUMN_HISTORIC = "historic_dataset";
-        public static final String COLUMN_QUOTE_INTERVAL = "interval_type";
+        public static final String COLUMN_QUOTE_VIS_OPTION = "quote_vis_option";
         public static final String COLUMN_QUOTE_SYMBOL ="quote_symbol";
         public static final int POSITION_SYMBOL_ID = 0;
         public static final int POSITION_QUOTE_INTERVAL = 1;
@@ -63,7 +63,7 @@ public final class Contract {
         static final String TABLE_NAME = "historic_data";
         public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 COLUMN_QUOTE_SYMBOL,
-                COLUMN_QUOTE_INTERVAL,
+                COLUMN_QUOTE_VIS_OPTION,
                 COLUMN_HISTORIC,
                 Quote.COLUMN_PRICE,
                 Quote.COLUMN_PERCENTAGE_CHANGE,

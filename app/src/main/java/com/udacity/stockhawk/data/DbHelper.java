@@ -35,10 +35,10 @@ class DbHelper extends SQLiteOpenHelper {
         String historicTable = "CREATE TABLE " + Contract.HistoricQuote.TABLE_NAME + " ("
                 + Contract.HistoricQuote._ID +"INTEGER PRIMARY KEY,"
                 + Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL + " TEXT NOT NULL , "
-                + Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL + " TEXT NOT NULL, "
+                + Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION + " TEXT NOT NULL, "
                 + Contract.HistoricQuote.COLUMN_HISTORIC + " text NOT NULL,"
                 + " UNIQUE ("+Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL+", "
-                + Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL+") ON CONFLICT REPLACE"+
+                + Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION+") ON CONFLICT REPLACE"+
                 " ); ";
         Timber.d("the table "+Contract.HistoricQuote.TABLE_NAME+"\n"+historicTable);
         try {
