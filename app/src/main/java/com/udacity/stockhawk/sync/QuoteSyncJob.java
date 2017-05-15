@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.IntDef;
+import android.widget.TextView;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import butterknife.BindView;
 import timber.log.Timber;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -63,8 +66,8 @@ public final class QuoteSyncJob {
     static void getQuotes(Context context) {
 
         Timber.d("Running sync job");
-        Interval [] theIntervals={Interval.MONTHLY,Interval.DAILY};//,Interval.DAILY};
-        int [] calendar_from = {Calendar.YEAR,Calendar.MONTH};//,Calendar.DAY_OF_WEEK};
+        Interval [] theIntervals={Interval.MONTHLY,Interval.DAILY,Interval.DAILY};//,Interval.DAILY};
+        int [] calendar_from = {Calendar.YEAR,Calendar.MONTH, Calendar.WEEK_OF_MONTH};//,Calendar.DAY_OF_WEEK};
 
 
         //from.add(Calendar.MONTH,-1);

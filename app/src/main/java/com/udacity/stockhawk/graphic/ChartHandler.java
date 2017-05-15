@@ -66,6 +66,7 @@ public class ChartHandler {
 
         String[] rows = parseString.split("\n");
         String []labels = new String[rows.length];
+        //parsing the information:
         for(int i = 0;i<rows.length;i++) {
             String []row = rows[i].split(",");
             values.add(new Entry(i,Float.parseFloat(row[1])));

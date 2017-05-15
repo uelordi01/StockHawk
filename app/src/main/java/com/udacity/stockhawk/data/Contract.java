@@ -64,7 +64,10 @@ public final class Contract {
         public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 COLUMN_QUOTE_SYMBOL,
                 COLUMN_QUOTE_INTERVAL,
-                COLUMN_HISTORIC
+                COLUMN_HISTORIC,
+                Quote.COLUMN_PRICE,
+                Quote.COLUMN_PERCENTAGE_CHANGE,
+                Quote.COLUMN_ABSOLUTE_CHANGE
         );
 
         public static Uri makeUriForQuotes(String symbol) {
@@ -74,5 +77,7 @@ public final class Contract {
             return queryUri.getLastPathSegment();
         }
     }
-
+    public static final ImmutableList<String> COMPLETE_QUOTES_HISTORIC_COLUMNS =
+            ImmutableList.of(
+            );
 }

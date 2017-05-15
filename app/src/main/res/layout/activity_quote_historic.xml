@@ -19,27 +19,55 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="30">
-<TextView
-    android:id="@+id/symbol"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/symbol_tv_text"
+        tools:text="@string/symbol_tv_text"/>
+    <TextView
+    android:id="@+id/tv_symbol"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     />
     <TextView
-        android:id="@+id/price"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="@string/price_tv_text"
+        tools:text="@string/price_tv_text"/>
     <TextView
-        android:id="@+id/change"
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="@string/price_tv_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_perc_tv_text"
+        tools:text="@string/change_perc_tv_text"/>
+    <TextView
+        android:id="@+id/tv_change_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="aaa"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_abs_tv_text"
+        tools:text="@string/change_abs_tv_text"/>
+    <TextView
+        android:id="@+id/tv_change_abs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="aaa"/>
 
 </android.support.constraint.ConstraintLayout>
 
-<FrameLayout
-    android:id="@+id/historic_root_layout"
-    android:layout_width="match_parent"
-    android:layout_weight="70"
-    android:layout_height="0dp"></FrameLayout>
+    <FrameLayout
+        android:id="@+id/historic_root_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="70"></FrameLayout>
     <!--<com.github.mikephil.charting.charts.LineChart-->
         <!--android:id="@+id/quote_chart"-->
         <!--android:layout_width="match_parent"-->

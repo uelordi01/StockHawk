@@ -2,12 +2,7 @@ package com.udacity.stockhawk.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -17,42 +12,51 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.Utils;
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.content.QuoteData;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.graphic.ChartHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class QuoteHistoricActivity extends AppCompatActivity
                                 implements LoaderManager.LoaderCallbacks<Cursor>{
     private String currentStockName = "";
     private static final int HISTORIC_LOADER = 2;
-    TextView historicDebugResult;
     ChartHandler stockChart;
     FrameLayout mGraphRootLayout;
     String [] graphOptions;
     String [] graphOptionsLabels;
     private static final int NUMBER_OF_OPTIONS = 3;
+
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_symbol)
+    TextView mTvSymbol;
+
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_change_percentage)
+    TextView mTvChangePercentage;
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_change_abs)
+    TextView mTvChangeAbs;
+
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_price)
+    TextView mTvPrice;
     //private static int mSelectionCounter = 0;
 
 //    LineChart mChart;
     String mgraphSelectedOption;
+    private QuoteData mQuoteData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quote_historic);
+        ButterKnife.bind(this);
         Intent parent_activity = getIntent();
         String stockNameKey = getString(R.string.pref_stocks_key);
         currentStockName = parent_activity.getStringExtra(stockNameKey);
@@ -105,24 +109,16 @@ public class QuoteHistoricActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        HashMap<String,String> result = new HashMap<>();
-
+        mQuoteData = new QuoteData();
+        int rowsCounted = mQuoteData.updateCursorData(data,this);
         mgraphSelectedOption = PrefUtils.getCurrentQutoesChartOption(this);
-        int selectionIndex = -1;
-        if (data.getCount() != 0) {
-            for(int i=0;i<data.getCount();i++) {
-                data.moveToPosition(i);
-                int symbolColumn = data.getColumnIndex(Contract.HistoricQuote.COLUMN_HISTORIC);
-                int intervalType = data.getColumnIndex(Contract.HistoricQuote.COLUMN_QUOTE_INTERVAL);
-                result.put(data.getString(intervalType),data.getString(symbolColumn));
-            }
-        }
-        //selectionIndex=getOptionIndex(mgraphSelectedOption);
-        if(selectionIndex < result.size()) {
+        int selectionIndex=getOptionIndex(mgraphSelectedOption);
+        if(selectionIndex < rowsCounted) {
             stockChart = new ChartHandler(getApplicationContext(),currentStockName);
-            stockChart.setData(result.get(mgraphSelectedOption), mgraphSelectedOption);
+            stockChart.setData(mQuoteData.getHistoricByOption(mgraphSelectedOption), mgraphSelectedOption);
             stockChart.showGraph(mGraphRootLayout);
         }
+        updateView();
     }
 
     @Override
@@ -139,5 +135,16 @@ public class QuoteHistoricActivity extends AppCompatActivity
         } else {
             loaderManager.restartLoader(HISTORIC_LOADER, null, this);
         }
+    }
+    private void updateView() {
+        if(mQuoteData != null) {
+            mTvPrice.setText(""+mQuoteData.getmPrice());
+            mTvChangePercentage.setText("%"+mQuoteData.getmPositionPercentageChange());
+            mTvChangeAbs.setText("$"+mQuoteData.getmPositionAbsChange());
+            mTvSymbol.setText(""+mQuoteData.getmPrice());
+        } else {
+            //TODO PUT HERE YOUR ERROR VIEW
+        }
+
     }
 }
