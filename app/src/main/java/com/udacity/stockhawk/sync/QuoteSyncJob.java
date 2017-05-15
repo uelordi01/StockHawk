@@ -66,8 +66,8 @@ public final class QuoteSyncJob {
     static void getQuotes(Context context) {
 
         Timber.d("Running sync job");
-        Interval [] theIntervals={Interval.MONTHLY,Interval.DAILY,Interval.DAILY};//,Interval.DAILY};
-        int [] calendar_from = {Calendar.YEAR,Calendar.MONTH, Calendar.WEEK_OF_MONTH};//,Calendar.DAY_OF_WEEK};
+        Interval [] theIntervals={Interval.DAILY, Interval.DAILY, Interval.MONTHLY,};//,Interval.DAILY};
+        int [] calendar_from = {Calendar.WEEK_OF_MONTH,Calendar.MONTH,Calendar.YEAR, };//,Calendar.DAY_OF_WEEK};
         String [] graphOptionsValues = context.getResources().getStringArray(R.array.pref_graph_option_values);
 
         //from.add(Calendar.MONTH,-1);

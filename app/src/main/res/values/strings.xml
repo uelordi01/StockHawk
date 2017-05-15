@@ -36,10 +36,11 @@
 
     <!--setting strings-->
     <string name="action_settings">Interval</string>
-    <string name="preference_interval_label">Time Interval</string>
-    <string name="preference_interval_month_label">1 Year</string>
-    <string name="preference_interval_week_label">5 days</string>
-    <string name="preference_interval_day_label">1 Month</string>
+    <string name="preference_graph_label">Time Interval</string>
+    <string name="preference_graph_year_label">1 Year</string>
+    <string name="preference_graph_month_label">1 Month</string>
+    <string name="preference_graph_week_label">5 days</string>
+
 
 
     <string name="preference_graph_mode_key" translatable="false">interval_key</string>
