@@ -43,7 +43,7 @@
 
 
 
-    <string name="preference_graph_mode_key" translatable="false">interval_key</string>
+    <string name="preference_graph_mode_key" translatable="false">graph_option_key</string>
     <string name="preference_graph_year_value" translatable="false">y</string>
     <string name="preference_graph_month_value" translatable="false">m</string>
     <string name="preference_graph_week_value" translatable="false">w</string>
