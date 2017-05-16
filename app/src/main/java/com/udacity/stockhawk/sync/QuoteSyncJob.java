@@ -121,7 +121,8 @@ public final class QuoteSyncJob {
                     Calendar from = Calendar.getInstance();
                     Calendar to = Calendar.getInstance();
                     from.add(calendar_from[j],-1);
-                    List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
+//                    List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
+                    List<HistoricalQuote> history = stock.getHistory(from, to, Interval.DAILY);
                     StringBuilder historyBuilder = new StringBuilder();
 
                     for (HistoricalQuote it : history) {

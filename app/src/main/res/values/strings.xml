@@ -48,7 +48,7 @@
     <string name="preference_graph_month_value" translatable="false">m</string>
     <string name="preference_graph_week_value" translatable="false">w</string>
 
-
+    <string name="graph_content_descrition">Current chart</string>
     <string name="symbol_tv_text" >Quote</string>
     <string name="price_tv_text" >Current price:</string>
     <string name="change_perc_tv_text" >ChangePerc:</string>
