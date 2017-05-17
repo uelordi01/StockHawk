@@ -43,6 +43,7 @@ public final class QuoteSyncJob {
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 1;
+    private static boolean enable_historic = false;
 
     //annotations of the resulting queries
     @Retention(RetentionPolicy.SOURCE)
@@ -96,8 +97,6 @@ public final class QuoteSyncJob {
 
             while (iterator.hasNext()) {
                 String symbol = iterator.next();
-
-
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
 
@@ -115,29 +114,30 @@ public final class QuoteSyncJob {
                 quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                 quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
                 quoteCVs.add(quoteCV);
-
+                if(enable_historic) {
                 for(int j=0;j<theIntervals.length;j++) {
-                    ContentValues historicValue = new ContentValues();
-                    Calendar from = Calendar.getInstance();
-                    Calendar to = Calendar.getInstance();
-                    from.add(calendar_from[j],-1);
-//                    List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
-                    List<HistoricalQuote> history = stock.getHistory(from, to, Interval.DAILY);
-                    StringBuilder historyBuilder = new StringBuilder();
+                        ContentValues historicValue = new ContentValues();
+                        Calendar from = Calendar.getInstance();
+                        Calendar to = Calendar.getInstance();
+                        from.add(calendar_from[j],-1);
+    //                    List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
+                        List<HistoricalQuote> history = stock.getHistory(from, to, Interval.DAILY);
+                        StringBuilder historyBuilder = new StringBuilder();
 
-                    for (HistoricalQuote it : history) {
-                        historyBuilder.append(it.getDate().getTimeInMillis());
-                        historyBuilder.append(", ");
-                        historyBuilder.append(it.getClose());
-                        historyBuilder.append("\n");
+                        for (HistoricalQuote it : history) {
+                            historyBuilder.append(it.getDate().getTimeInMillis());
+                            historyBuilder.append(", ");
+                            historyBuilder.append(it.getClose());
+                            historyBuilder.append("\n");
+                        }
+                        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
+                                                                                symbol);
+                        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
+                                graphOptionsValues[j]);
+                        historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
+                                                        historyBuilder.toString());
+                        historicCVs.add(historicValue);
                     }
-                    historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
-                                                                            symbol);
-                    historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
-                            graphOptionsValues[j]);
-                    historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
-                                                    historyBuilder.toString());
-                    historicCVs.add(historicValue);
                 }
             }
 
@@ -145,11 +145,12 @@ public final class QuoteSyncJob {
                     .bulkInsert(
                             Contract.Quote.URI,
                             quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
-            context.getContentResolver()
-                    .bulkInsert(
-                            Contract.HistoricQuote.URI,
-                            historicCVs.toArray(new ContentValues[historicCVs.size()]));
-
+            if(enable_historic) {
+                context.getContentResolver()
+                        .bulkInsert(
+                                Contract.HistoricQuote.URI,
+                                historicCVs.toArray(new ContentValues[historicCVs.size()]));
+            }
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
 
