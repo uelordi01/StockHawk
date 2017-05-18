@@ -103,8 +103,9 @@ public class QuoteData implements Parcelable {
                 int perc_change =data.getColumnIndex(Contract.Quote.COLUMN_PERCENTAGE_CHANGE);
                 int abs_change =   data.getColumnIndex(Contract.Quote.COLUMN_ABSOLUTE_CHANGE);
 
+                mSymbol = data.getString(symbolColumn);
                 mPrice = data.getFloat(priceColumn);
-                mPositionPercentageChange =data.getFloat(perc_change);
+                mPositionPercentageChange = data.getFloat(perc_change);
                 mPositionAbsChange = data.getFloat(abs_change);
                 mHistoricValues.put(data.getString(intervalType),data.getString(symbolColumn));
             }

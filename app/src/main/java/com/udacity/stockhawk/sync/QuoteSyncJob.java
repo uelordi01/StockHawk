@@ -43,6 +43,7 @@ public final class QuoteSyncJob {
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 1;
+    // this is a debug flag remove to distribution
     private static boolean enable_historic = false;
 
     //annotations of the resulting queries

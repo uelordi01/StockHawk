@@ -53,5 +53,6 @@
 
 <!-- widget values -->
     <string name="widget_title">Stock Hawk</string>
-    <string name="widget_id_array_key" translatable="false">widgetid_array</string>
+    <!--<string name="widget_id_array_key" translatable="false">widgetid_array</string>-->
+    <string name="widget_error_data_empty">Stock List is empty</string>
 </resources>

@@ -111,7 +111,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
          mQuoteData = new QuoteData();
         int rowsCounted = mQuoteData.updateCursorData(data,this);
         mgraphSelectedOption = PrefUtils.getCurrentQuotesChartPref(this);
-        int selectionIndex=getOptionIndex(mgraphSelectedOption);
+        int selectionIndex = getOptionIndex(mgraphSelectedOption);
         if(selectionIndex < rowsCounted) {
             stockChart = new ChartHandler(getApplicationContext(),currentStockName);
             stockChart.setData(mQuoteData.getHistoricByOption(mgraphSelectedOption), mgraphSelectedOption);
