@@ -35,6 +35,8 @@ public class ChartHandler {
 
     public ChartHandler(Context context, String chartName) {
         mChart = new LineChart(context);
+        mChart.setContentDescription(context.
+                getString(R.string.graph_content_descrition));
         mChartName = chartName;
         mContext = context;
         // optionList = context.getResources().getStringArray(R.array.pref_interval_option_values);
