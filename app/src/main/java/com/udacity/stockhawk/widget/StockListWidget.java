@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
@@ -18,8 +19,27 @@ import com.udacity.stockhawk.ui.MainActivity;
 /**
  * Created by uelordi on 17/05/2017.
  */
-
 public class StockListWidget extends AppWidgetProvider {
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+    }
+
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
+    }
+
+    @Override
+    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
+        super.onRestored(context, oldWidgetIds, newWidgetIds);
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
@@ -28,25 +48,29 @@ public class StockListWidget extends AppWidgetProvider {
                     R.layout.widget_layout);
 
             Intent returnIntent = new Intent(context, MainActivity.class);
-            //TODO CALL TO THE REMOTEVIEW_SERVICE
-
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, returnIntent, 0);
             views.setOnClickPendingIntent(R.id.widget_stock_list, pendingIntent);
+            //TODO CALL TO THE REMOTEVIEW_SERVICE
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 setRemoteAdapter(context, views);
             } else {
                 setRemoteAdapterV11(context, views);
             }
+//            boolean useDetailActivity = context.getResources()
+//                    .getBoolean(R.bool.use_detail_activity);
+//            Intent clickIntentTemplate = useDetailActivity
+//                    ? new Intent(context, DetailActivity.class)
+//                    : new Intent(context, MainActivity.class);
+//            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+//                    .addNextIntentWithParentStack(clickIntentTemplate)
+//                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//            views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
+//            views.setEmptyView(R.id.widget_list, R.id.widget_empty);
             appWidgetManager.updateAppWidget(appWidgetID, views);
         }
-
-//        Intent intent = new Intent(context,WidgetUpdateIntentService.class);
-//        intent.putExtra(AppWidgetManager.ACTION_APPWIDGET_UPDATE,appWidgetIds);
-//
-//
-////        context.startService(intent);
-//        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        super.onUpdate(context,appWidgetManager,appWidgetIds);
     }
 
     @Override
@@ -55,11 +79,12 @@ public class StockListWidget extends AppWidgetProvider {
 //            RemoteViews views = new RemoteViews(context.getPackageName(),
 //                    R.layout.widget_layout);
 //            setRemoteAdapter(context,views);
+        super.onReceive(context,intent);
         String action =  intent.getAction();
         if(intent.getAction().equals(QuoteSyncJob.ACTION_DATA_UPDATED)) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
-                new ComponentName(context, getClass()));
+                new ComponentName(context,StockListWidget.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_stock_list);
         }
     }
