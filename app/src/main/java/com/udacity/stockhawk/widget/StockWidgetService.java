@@ -1,5 +1,7 @@
 package com.udacity.stockhawk.widget;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Binder;
@@ -20,10 +22,21 @@ public class StockWidgetService extends RemoteViewsService {
   // TODO IF THERE IS IMAGE IN YOUR WIDGET YOU SHOULD ADD THE CONTENT DESCRIPTION
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new StockRemoteViewsFactory();
+        return new StockRemoteViewsFactory(this.getApplicationContext(), intent);
     }
     class StockRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
+        Context context;
+        int appWidgetId;
+
         private Cursor data = null;
+        public StockRemoteViewsFactory(Context context, Intent intent) {
+            // TODO Auto-generated constructor stub
+            this.context = context;
+            this.appWidgetId = intent.getIntExtra(
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+            // initialize objects
+        }
         @Override
         public void onCreate() {
             // Nothing to do

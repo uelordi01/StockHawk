@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.ui.MainActivity;
 
 /**
@@ -25,6 +26,7 @@ public class StockListWidget extends AppWidgetProvider {
         for (int appWidgetID : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
+
             Intent returnIntent = new Intent(context, MainActivity.class);
             //TODO CALL TO THE REMOTEVIEW_SERVICE
 
@@ -36,13 +38,6 @@ public class StockListWidget extends AppWidgetProvider {
             } else {
                 setRemoteAdapterV11(context, views);
             }
-
-
-
-
-
-
-
             appWidgetManager.updateAppWidget(appWidgetID, views);
         }
 
@@ -60,7 +55,8 @@ public class StockListWidget extends AppWidgetProvider {
 //            RemoteViews views = new RemoteViews(context.getPackageName(),
 //                    R.layout.widget_layout);
 //            setRemoteAdapter(context,views);
-        if(intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) {
+        String action =  intent.getAction();
+        if(intent.getAction().equals(QuoteSyncJob.ACTION_DATA_UPDATED)) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                 new ComponentName(context, getClass()));

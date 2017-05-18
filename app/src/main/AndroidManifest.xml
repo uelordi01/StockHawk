@@ -30,7 +30,10 @@
             android:name=".widget.WidgetUpdateIntentService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
-
+        <service
+            android:name=".widget.StockWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
@@ -51,6 +54,7 @@
             android:label="@string/widget_title">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_stock_metadata"/>
