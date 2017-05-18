@@ -35,7 +35,7 @@ public class WidgetUpdateIntentService extends IntentService {
         Context context = getApplicationContext();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int appWidgetIds[] = intent.getIntArrayExtra(
-                context.getString(R.string.widget_id_array_key));
+                context.getString(Integer.parseInt(appWidgetManager.ACTION_APPWIDGET_ENABLED)));
 
         for (int appWidgetID : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(),
