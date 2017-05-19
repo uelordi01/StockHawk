@@ -10,35 +10,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 import com.udacity.stockhawk.ui.MainActivity;
+import com.udacity.stockhawk.ui.QuoteHistoricActivity;
 
 /**
  * Created by uelordi on 17/05/2017.
  */
 public class StockListWidget extends AppWidgetProvider {
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-    }
-
-    @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
-    }
-
-    @Override
-    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
-        super.onRestored(context, oldWidgetIds, newWidgetIds);
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -47,51 +30,45 @@ public class StockListWidget extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(),
                     R.layout.widget_layout);
 
-            Intent returnIntent = new Intent(context, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, returnIntent, 0);
-            views.setOnClickPendingIntent(R.id.widget_stock_list, pendingIntent);
-            //TODO CALL TO THE REMOTEVIEW_SERVICE
-
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                setRemoteAdapter(context, views);
+                setRemoteAdapter(context, views,appWidgetID);
             } else {
-                setRemoteAdapterV11(context, views);
+                setRemoteAdapterV11(context, views,appWidgetID);
             }
-//            boolean useDetailActivity = context.getResources()
-//                    .getBoolean(R.bool.use_detail_activity);
-//            Intent clickIntentTemplate = useDetailActivity
-//                    ? new Intent(context, DetailActivity.class)
-//                    : new Intent(context, MainActivity.class);
-//            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
-//                    .addNextIntentWithParentStack(clickIntentTemplate)
-//                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-//            views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
-//            views.setEmptyView(R.id.widget_list, R.id.widget_empty);
+            Intent clickIntentTemplate = new Intent(context,
+                    QuoteHistoricActivity.class);
+            PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(clickIntentTemplate)
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_stock_list, clickPendingIntentTemplate);
+            views.setEmptyView(R.id.widget_stock_list, R.id.widget_empty);
             appWidgetManager.updateAppWidget(appWidgetID, views);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetID,
+                                                            R.id.widget_stock_list);
         }
         super.onUpdate(context,appWidgetManager,appWidgetIds);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        if(intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE")) {
-//            RemoteViews views = new RemoteViews(context.getPackageName(),
-//                    R.layout.widget_layout);
-//            setRemoteAdapter(context,views);
         super.onReceive(context,intent);
         String action =  intent.getAction();
-        if(intent.getAction().equals(QuoteSyncJob.ACTION_DATA_UPDATED)) {
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
-                new ComponentName(context,StockListWidget.class));
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_stock_list);
+
+        if(action.equals(QuoteSyncJob.ACTION_DATA_UPDATED)) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            int[] appWidgetIds = appWidgetManager.
+                    getAppWidgetIds(new ComponentName(context,getClass()));
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+                                                    R.id.widget_stock_list);
         }
     }
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(R.id.widget_stock_list,
-                new Intent(context, StockWidgetService.class));
+    private void setRemoteAdapter(Context context,
+                                  @NonNull final RemoteViews views,
+                                  int appWidgetId) {
+        Intent adapterIntent = new Intent(context,StockWidgetService.class);
+        adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        views.setRemoteAdapter(R.id.widget_stock_list,adapterIntent );
     }
 //
 //    /**
@@ -100,8 +77,11 @@ public class StockListWidget extends AppWidgetProvider {
 //     * @param views RemoteViews to set the RemoteAdapter
 //     */
     @SuppressWarnings("deprecation")
-    private void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
-        views.setRemoteAdapter(0, R.id.widget_stock_list,
-                new Intent(context, StockWidgetService.class));
+    private void setRemoteAdapterV11(Context context,
+                                     @NonNull final RemoteViews views,
+                                     int appWidgetId) {
+        Intent adapterIntent = new Intent(context,StockWidgetService.class);
+        adapterIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        views.setRemoteAdapter(0, R.id.widget_stock_list, adapterIntent);
     }
 }

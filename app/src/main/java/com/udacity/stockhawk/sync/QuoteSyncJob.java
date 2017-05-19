@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.IntDef;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
@@ -100,45 +101,49 @@ public final class QuoteSyncJob {
                 String symbol = iterator.next();
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
+                if(isTheQuerySafe(quote)) {
+                    float price = quote.getPrice().floatValue();
+                    float change = quote.getChange().floatValue();
+                    float percentChange = quote.getChangeInPercent().floatValue();
 
-                float price = quote.getPrice().floatValue();
-                float change = quote.getChange().floatValue();
-                float percentChange = quote.getChangeInPercent().floatValue();
+                    // WARNING! Don't request historical data for a stock that doesn't exist!
+                    // The request will hang forever X_x
+                    //context.getContentResolver().delete(Contract.HistoricQuote.URI,null,null);
 
-                // WARNING! Don't request historical data for a stock that doesn't exist!
-                // The request will hang forever X_x
-                //context.getContentResolver().delete(Contract.HistoricQuote.URI,null,null);
+                    ContentValues quoteCV = new ContentValues();
+                    quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
+                    quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
+                    quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
+                    quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
+                    quoteCVs.add(quoteCV);
+                    if (enable_historic) {
+                        for (int j = 0; j < theIntervals.length; j++) {
+                            ContentValues historicValue = new ContentValues();
+                            Calendar from = Calendar.getInstance();
+                            Calendar to = Calendar.getInstance();
+                            from.add(calendar_from[j], -1);
 
-                ContentValues quoteCV = new ContentValues();
-                quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
-                quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
-                quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
-                quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
-                quoteCVs.add(quoteCV);
-                if(enable_historic) {
-                for(int j=0;j<theIntervals.length;j++) {
-                        ContentValues historicValue = new ContentValues();
-                        Calendar from = Calendar.getInstance();
-                        Calendar to = Calendar.getInstance();
-                        from.add(calendar_from[j],-1);
-    //                    List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
-                        List<HistoricalQuote> history = stock.getHistory(from, to, Interval.DAILY);
-                        StringBuilder historyBuilder = new StringBuilder();
+                            List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
+                            StringBuilder historyBuilder = new StringBuilder();
 
-                        for (HistoricalQuote it : history) {
-                            historyBuilder.append(it.getDate().getTimeInMillis());
-                            historyBuilder.append(", ");
-                            historyBuilder.append(it.getClose());
-                            historyBuilder.append("\n");
+                            for (HistoricalQuote it : history) {
+                                historyBuilder.append(it.getDate().getTimeInMillis());
+                                historyBuilder.append(", ");
+                                historyBuilder.append(it.getClose());
+                                historyBuilder.append("\n");
+                            }
+                            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
+                                    symbol);
+                            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
+                                    graphOptionsValues[j]);
+                            historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
+                                    historyBuilder.toString());
+                            historicCVs.add(historicValue);
                         }
-                        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
-                                                                                symbol);
-                        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
-                                graphOptionsValues[j]);
-                        historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
-                                                        historyBuilder.toString());
-                        historicCVs.add(historicValue);
                     }
+                } else {
+                    //TODO MAKE HERE THE ERROR HANDLING.
+                    // Toast.makeText(context,"the requested qquote edoes not exist",Toast.LENGTH_LONG);
                 }
             }
 
@@ -209,6 +214,15 @@ public final class QuoteSyncJob {
 
         }
     }
+    private static boolean isTheQuerySafe(StockQuote quote) {
+        if(quote.getPrice() != null &&
+                quote.getChange() != null &&
+                quote.getChangeInPercent()!= null ) {
+            return true;
+        }
+        return false;
+    }
+
 
 
 }
