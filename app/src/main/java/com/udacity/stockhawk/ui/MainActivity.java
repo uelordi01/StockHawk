@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements
 
             PrefUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
+
         }
     }
 
@@ -191,5 +192,19 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void updateView(){
+        String message = "";
+        @QuoteSyncJob.locationErrorStatus int error = PrefUtils.getErrorStatus(this);
+        switch (error) {
+            case QuoteSyncJob.STOCK_NOT_EXIST: {
+                message = getString(R.string.error_no_stocks);
+                break;
+            }
+            default: { //here is not error.
+                message = "";
+                break;
+            }
+        }
     }
 }

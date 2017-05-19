@@ -50,12 +50,12 @@ public final class QuoteSyncJob {
     //annotations of the resulting queries
     @Retention(RetentionPolicy.SOURCE)
     @IntDef( {
-        INTERVAL_WEEKLY,INTERVAL_MONTH,INTERVAL_SIZE
+        STOCK_NOT_EXIST,INTERVAL_MONTH,INTERVAL_SIZE
     })
-    public  @interface TimeInterval{};
+    public  @interface locationErrorStatus{};
 
 
-    public static final int INTERVAL_WEEKLY = 0;
+    public static final int STOCK_NOT_EXIST = 0;
     public static final int INTERVAL_MONTH = 1;
     public static final int INTERVAL_SIZE = 2;
 
@@ -143,6 +143,7 @@ public final class QuoteSyncJob {
                     }
                 } else {
                     //TODO MAKE HERE THE ERROR HANDLING.
+                    PrefUtils.setErrorStatus(context,QuoteSyncJob.STOCK_NOT_EXIST);
                     // Toast.makeText(context,"the requested qquote edoes not exist",Toast.LENGTH_LONG);
                 }
             }

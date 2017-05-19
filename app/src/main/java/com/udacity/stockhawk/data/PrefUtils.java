@@ -99,18 +99,24 @@ public final class PrefUtils {
         editor.putString(context.getString(R.string.preference_graph_mode_key),option);
         editor.apply();
     }
-    public String [] getChartVisualizationOptionValues(Context context){
+    public static String [] getChartVisualizationOptionValues(Context context){
         return context.getResources().getStringArray(R.array.pref_graph_option_values);
     }
-    public String [] getChartVisualizationOptionLabels(Context context){
+    public static String [] getChartVisualizationOptionLabels(Context context){
         return context.getResources().getStringArray(R.array.pref_graph_option_labels);
     }
     @SuppressWarnings("ResourceType")
-    static public @QuoteSyncJob.TimeInterval
-    int getLocationStatus(Context c){
-        //SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        //return sp.getInt(c.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
-        return 0;
+    static public @QuoteSyncJob.locationErrorStatus
+    int getErrorStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getInt(c.getString(R.string.error_handling_key),QuoteSyncJob.STOCK_NOT_EXIST);
     }
+    public static void setErrorStatus(Context c, @QuoteSyncJob.locationErrorStatus int locationStatus) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(c.getString(R.string.error_handling_key),locationStatus);
+        editor.apply();
+    }
+
 
 }

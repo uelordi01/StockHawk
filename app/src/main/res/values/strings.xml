@@ -50,7 +50,8 @@
     <string name="change_perc_tv_text" >ChangePerc:</string>
     <string name="change_abs_tv_text" >ChangeAbs:</string>
 <!-- service handle values -->
-
+<!-- ERROR HANDLING -->
+    <string name="error_handling_key">error_location</string>
 <!-- widget values -->
     <string name="widget_title">Stock Hawk</string>
     <!--<string name="widget_id_array_key" translatable="false">widgetid_array</string>-->
