@@ -50,17 +50,21 @@ public final class QuoteSyncJob {
     //annotations of the resulting queries
     @Retention(RetentionPolicy.SOURCE)
     @IntDef( {
-        STOCK_NOT_EXIST,INTERVAL_MONTH,INTERVAL_SIZE
+        ERROR_STATUS_OK,
+        ERROR_STOCK_EMPTY,
+        TOAST_ERROR_STOCK_NOT_EXIST,
+        ERROR_NO_NETWORK,
+        TOAST_ERROR_NO_CONECTIVITY,
+        TOAST_STOCK_ADDED_NO_CONNECTIVITY
     })
     public  @interface locationErrorStatus{};
 
-
-    public static final int STOCK_NOT_EXIST = 0;
-    public static final int INTERVAL_MONTH = 1;
-    public static final int INTERVAL_SIZE = 2;
-
-    //TODO PUT HERE THE ANNOTATIONS OF THE INTDEF LIKE A ENUM (WITH THE INTERVAL)
-    //TODO so you have to decide your ranges in the period:
+    public static final int ERROR_STATUS_OK = 0;
+    public static final int ERROR_STOCK_EMPTY = 1;
+    public static final int TOAST_ERROR_STOCK_NOT_EXIST = 2;
+    public static final int ERROR_NO_NETWORK = 3;
+    public static final int TOAST_ERROR_NO_CONECTIVITY = 4;
+    public static final int TOAST_STOCK_ADDED_NO_CONNECTIVITY = 5;
 
 
     private QuoteSyncJob() {
@@ -73,8 +77,6 @@ public final class QuoteSyncJob {
         int [] calendar_from = {Calendar.WEEK_OF_MONTH,Calendar.MONTH,Calendar.YEAR, };//,Calendar.DAY_OF_WEEK};
         String [] graphOptionsValues = context.getResources().getStringArray(R.array.pref_graph_option_values);
 
-        //from.add(Calendar.MONTH,-1);
-        //from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
         try {
 
@@ -142,8 +144,9 @@ public final class QuoteSyncJob {
                         }
                     }
                 } else {
-                    //TODO MAKE HERE THE ERROR HANDLING.
-                    PrefUtils.setErrorStatus(context,QuoteSyncJob.STOCK_NOT_EXIST);
+                    //The stock name does not exists:
+                    PrefUtils.setErrorStatus(context,TOAST_ERROR_STOCK_NOT_EXIST);
+                    return;
                     // Toast.makeText(context,"the requested qquote edoes not exist",Toast.LENGTH_LONG);
                 }
             }
@@ -162,6 +165,7 @@ public final class QuoteSyncJob {
             context.sendBroadcast(dataUpdatedIntent);
 
         } catch (IOException exception) {
+            PrefUtils.setErrorStatus(context,ERROR_NO_NETWORK);
             Timber.e(exception, "Error fetching stock quotes");
         }
     }

@@ -109,7 +109,7 @@ public final class PrefUtils {
     static public @QuoteSyncJob.locationErrorStatus
     int getErrorStatus(Context c){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        return sp.getInt(c.getString(R.string.error_handling_key),QuoteSyncJob.STOCK_NOT_EXIST);
+        return sp.getInt(c.getString(R.string.error_handling_key),QuoteSyncJob.ERROR_STATUS_OK);
     }
     public static void setErrorStatus(Context c, @QuoteSyncJob.locationErrorStatus int locationStatus) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);

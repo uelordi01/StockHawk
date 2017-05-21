@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
     @SuppressWarnings("WeakerAccess")
-    @BindView(R.id.error)
-    TextView error;
+    @BindView(R.id.tv_error)
+    TextView errorView;
     private StockAdapter adapter;
 
     @Override
@@ -99,25 +99,20 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-
         QuoteSyncJob.syncImmediately(this);
-
         if (!networkUp() && adapter.getItemCount() == 0) {
             swipeRefreshLayout.setRefreshing(false);
-            error.setText(getString(R.string.error_no_network));
-            error.setVisibility(View.VISIBLE);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
         } else if (!networkUp()) {
             swipeRefreshLayout.setRefreshing(false);
-            Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
         } else if (PrefUtils.getStocks(this).size() == 0) {
             swipeRefreshLayout.setRefreshing(false);
-            error.setText(getString(R.string.error_no_stocks));
-            error.setVisibility(View.VISIBLE);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
         } else {
-            error.setVisibility(View.GONE);
+            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
         }
     }
-
     public void button(@SuppressWarnings("UnusedParameters") View view) {
         new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
     }
@@ -131,10 +126,8 @@ public class MainActivity extends AppCompatActivity implements
                 String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
-
             PrefUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
-
         }
     }
 
@@ -150,10 +143,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         swipeRefreshLayout.setRefreshing(false);
 
-        if (data.getCount() != 0) {
-            error.setVisibility(View.GONE);
-        }
+       /* if (data.getCount() != 0) {
+            errorView.setVisibility(View.GONE);
+        }*/
+
         adapter.setCursor(data);
+        updateView();
     }
 
 
@@ -195,16 +190,53 @@ public class MainActivity extends AppCompatActivity implements
     }
     public void updateView(){
         String message = "";
-        @QuoteSyncJob.locationErrorStatus int error = PrefUtils.getErrorStatus(this);
-        switch (error) {
-            case QuoteSyncJob.STOCK_NOT_EXIST: {
+        boolean showToast = false;
+        @QuoteSyncJob.locationErrorStatus int errorType = PrefUtils.getErrorStatus(this);
+        switch (errorType) {
+            case QuoteSyncJob.ERROR_STATUS_OK: {
+                message = getString(R.string.error_status_ok);
+                break;
+            }
+            case QuoteSyncJob.ERROR_STOCK_EMPTY:{
                 message = getString(R.string.error_no_stocks);
                 break;
             }
-            default: { //here is not error.
+            case QuoteSyncJob.TOAST_ERROR_STOCK_NOT_EXIST: {
+                message = getString(R.string.toast_error_stock_not_found);
+                showToast = true;
+                break;
+            }
+            case QuoteSyncJob.ERROR_NO_NETWORK: {
+                message = getString(R.string.error_no_network);
+                break;
+            }
+            case QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY:{
+                message = getString(R.string.toast_no_connectivity);
+                showToast = true;
+                break;
+            }
+            case QuoteSyncJob.TOAST_STOCK_ADDED_NO_CONNECTIVITY:{
+                message = getString(R.string.toast_stock_added_no_connectivity);
+                showToast = true;
+                break;
+            }
+            default: { //here is not errorType.
                 message = "";
                 break;
             }
         }
+        errorView.setText(message);
+        if(errorType == QuoteSyncJob.ERROR_STATUS_OK
+                || errorType == QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY
+                || errorType == QuoteSyncJob.TOAST_ERROR_STOCK_NOT_EXIST
+                || errorType == QuoteSyncJob.TOAST_STOCK_ADDED_NO_CONNECTIVITY) {
+            errorView.setVisibility(View.GONE);
+        } else {
+            errorView.setVisibility(View.VISIBLE);
+        }
+        if (showToast) {
+            Toast.makeText(this, message,Toast.LENGTH_LONG).show();
+        }
+
     }
 }
