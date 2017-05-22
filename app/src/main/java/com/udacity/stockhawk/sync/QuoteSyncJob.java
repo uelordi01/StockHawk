@@ -45,7 +45,7 @@ public final class QuoteSyncJob {
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 1;
     // this is a debug flag remove to distribution
-    private static boolean enable_historic = false;
+    private static boolean enable_historic = true;
 
     //annotations of the resulting queries
     @Retention(RetentionPolicy.SOURCE)
@@ -79,7 +79,7 @@ public final class QuoteSyncJob {
 
 
         try {
-
+            PrefUtils.setErrorStatus(context,ERROR_STATUS_OK);
             Set<String> stockPref = PrefUtils.getStocks(context);
             Set<String> stockCopy = new HashSet<>();
             stockCopy.addAll(stockPref);
@@ -146,7 +146,6 @@ public final class QuoteSyncJob {
                 } else {
                     //The stock name does not exists:
                     PrefUtils.setErrorStatus(context,TOAST_ERROR_STOCK_NOT_EXIST);
-                    return;
                     // Toast.makeText(context,"the requested qquote edoes not exist",Toast.LENGTH_LONG);
                 }
             }
@@ -190,7 +189,7 @@ public final class QuoteSyncJob {
 
     public static synchronized void initialize(final Context context) {
 
-        schedulePeriodic(context);
+        // schedulePeriodic(context);
         syncImmediately(context);
 
     }
@@ -205,7 +204,7 @@ public final class QuoteSyncJob {
             context.startService(nowIntent);
         } else {
 
-            JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
+         /*   JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
 
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -213,10 +212,8 @@ public final class QuoteSyncJob {
 
 
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
-            scheduler.schedule(builder.build());
-
-
+            scheduler.schedule(builder.build());*/
+            schedulePeriodic(context);
         }
     }
     private static boolean isTheQuerySafe(StockQuote quote) {

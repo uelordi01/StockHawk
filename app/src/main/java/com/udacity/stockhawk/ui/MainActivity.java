@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements
 
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setRefreshing(true);
-        onRefresh();
+        //onRefresh();
 
         QuoteSyncJob.initialize(this);
         getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
@@ -100,18 +100,19 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRefresh() {
         QuoteSyncJob.syncImmediately(this);
-        if (!networkUp() && adapter.getItemCount() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
-            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
-        } else if (!networkUp()) {
-            swipeRefreshLayout.setRefreshing(false);
-            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
-        } else if (PrefUtils.getStocks(this).size() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
-            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
-        } else {
-            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
-        }
+//        if (!networkUp() && adapter.getItemCount() == 0) {
+//            swipeRefreshLayout.setRefreshing(false);
+//            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
+//        } else if (!networkUp()) {
+//            swipeRefreshLayout.setRefreshing(false);
+//            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
+//        } else if (PrefUtils.getStocks(this).size() == 0) {
+//            swipeRefreshLayout.setRefreshing(false);
+//            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
+//        } else {
+//            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
+//        }
+
     }
     public void button(@SuppressWarnings("UnusedParameters") View view) {
         new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
@@ -148,6 +149,19 @@ public class MainActivity extends AppCompatActivity implements
         }*/
 
         adapter.setCursor(data);
+
+        if (!networkUp() && adapter.getItemCount() == 0) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
+        } else if (!networkUp()) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
+        } else if (PrefUtils.getStocks(this).size() == 0) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
+        } else {
+            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
+        }
         updateView();
     }
 

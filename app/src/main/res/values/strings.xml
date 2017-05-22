@@ -31,7 +31,7 @@
     <string name="error_status_ok"></string>
 
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
-    <string name="toast_no_connectivity">Will refresh when network available.</string>
+    <string name="toast_no_connectivity">No connectivity, the data will refresh when network available.</string>
     <string name="toast_error_stock_not_found">the stock  %s is not available</string>
 
     <!--setting strings-->
