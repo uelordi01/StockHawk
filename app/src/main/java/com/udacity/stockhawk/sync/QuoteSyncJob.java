@@ -9,16 +9,29 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.IntDef;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.GlobalConfiguration;
 import com.udacity.stockhawk.data.PrefUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -27,13 +40,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.BindView;
 import timber.log.Timber;
+//import yahoofinance.Stock;
+//import yahoofinance.YahooFinance;
+//import yahoofinance.histquotes.HistoricalQuote;
+//import yahoofinance.histquotes.Interval;
+//import yahoofinance.quotes.stock.StockQuote;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
-import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
+import yahoofinance.histquotes.Interval;
 
 
 public final class QuoteSyncJob {
@@ -45,7 +62,6 @@ public final class QuoteSyncJob {
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 1;
     // this is a debug flag remove to distribution
-    private static boolean enable_historic = true;
 
     //annotations of the resulting queries
     @Retention(RetentionPolicy.SOURCE)
@@ -103,49 +119,35 @@ public final class QuoteSyncJob {
                 String symbol = iterator.next();
                 Stock stock = quotes.get(symbol);
                 StockQuote quote = stock.getQuote();
+
+
                 if(isTheQuerySafe(quote)) {
                     float price = quote.getPrice().floatValue();
                     float change = quote.getChange().floatValue();
                     float percentChange = quote.getChangeInPercent().floatValue();
-
-                    // WARNING! Don't request historical data for a stock that doesn't exist!
-                    // The request will hang forever X_x
-                    //context.getContentResolver().delete(Contract.HistoricQuote.URI,null,null);
-
                     ContentValues quoteCV = new ContentValues();
                     quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
                     quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
                     quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
                     quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
                     quoteCVs.add(quoteCV);
-                    if (enable_historic) {
-                        for (int j = 0; j < theIntervals.length; j++) {
-                            ContentValues historicValue = new ContentValues();
-                            Calendar from = Calendar.getInstance();
-                            Calendar to = Calendar.getInstance();
-                            from.add(calendar_from[j], -1);
-
-                            List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
-                            StringBuilder historyBuilder = new StringBuilder();
-
-                            for (HistoricalQuote it : history) {
-                                historyBuilder.append(it.getDate().getTimeInMillis());
-                                historyBuilder.append(", ");
-                                historyBuilder.append(it.getClose());
-                                historyBuilder.append("\n");
-                            }
-                            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
-                                    symbol);
-                            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
-                                    graphOptionsValues[j]);
-                            historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
-                                    historyBuilder.toString());
-                            historicCVs.add(historicValue);
+                    ArrayList<ContentValues> historicSymbol;
+                    if(GlobalConfiguration.ENABLE_HISTORIC) {
+                        if (GlobalConfiguration.ENABLE_DUMMY_DATA) {
+                            historicSymbol = getDummyHistoricData(context, stock);
+                            historicCVs.addAll(historicSymbol);
+                        } else {
+                            historicSymbol = getHistoricFromStock(stock,
+                                    graphOptionsValues,
+                                    theIntervals,
+                                    calendar_from);
+                            historicCVs.addAll(historicSymbol);
                         }
                     }
                 } else {
                     //The stock name does not exists:
                     PrefUtils.setErrorStatus(context,TOAST_ERROR_STOCK_NOT_EXIST);
+                    PrefUtils.removeStock(context,quote.getSymbol());
                     // Toast.makeText(context,"the requested qquote edoes not exist",Toast.LENGTH_LONG);
                 }
             }
@@ -154,7 +156,7 @@ public final class QuoteSyncJob {
                     .bulkInsert(
                             Contract.Quote.URI,
                             quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
-            if(enable_historic) {
+            if(GlobalConfiguration.ENABLE_HISTORIC) {
                 context.getContentResolver()
                         .bulkInsert(
                                 Contract.HistoricQuote.URI,
@@ -189,7 +191,7 @@ public final class QuoteSyncJob {
 
     public static synchronized void initialize(final Context context) {
 
-        // schedulePeriodic(context);
+         schedulePeriodic(context);
         syncImmediately(context);
 
     }
@@ -204,7 +206,7 @@ public final class QuoteSyncJob {
             context.startService(nowIntent);
         } else {
 
-         /*   JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
+           JobInfo.Builder builder = new JobInfo.Builder(ONE_OFF_ID, new ComponentName(context, QuoteJobService.class));
 
 
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -212,8 +214,7 @@ public final class QuoteSyncJob {
 
 
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-            scheduler.schedule(builder.build());*/
-            schedulePeriodic(context);
+            scheduler.schedule(builder.build());
         }
     }
     private static boolean isTheQuerySafe(StockQuote quote) {
@@ -224,6 +225,107 @@ public final class QuoteSyncJob {
         }
         return false;
     }
+    private static ArrayList<ContentValues> getHistoricFromStock(
+                                                                 Stock stock,
+                                                                 String [] graphOptionsValues,
+                                                                 Interval[] theIntervals,
+                                                                 int [] calendar_from) throws IOException {
+
+        ArrayList<ContentValues> historicCVs = new ArrayList<>();
+        for (int j = 0; j < theIntervals.length; j++) {
+            ContentValues historicValue = new ContentValues();
+            Calendar from = Calendar.getInstance();
+            Calendar to = Calendar.getInstance();
+            from.add(calendar_from[j], -1);
+
+            List<HistoricalQuote> history = stock.getHistory(from, to, theIntervals[j]);
+            StringBuilder historyBuilder = new StringBuilder();
+
+            for (HistoricalQuote it : history) {
+                historyBuilder.append(it.getDate().getTimeInMillis());
+                historyBuilder.append(", ");
+                historyBuilder.append(it.getClose());
+                historyBuilder.append("\n");
+            }
+            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
+                    stock.getSymbol());
+            historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
+                    graphOptionsValues[j]);
+            historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
+                    historyBuilder.toString());
+            historicCVs.add(historicValue);
+        }
+        return historicCVs;
+    }
+    private static ArrayList<ContentValues> getDummyHistoricData(
+              Context context,
+               Stock stock
+                ) throws IOException {
+
+        List<HistoricalQuote> history = new ArrayList<>();
+        ArrayList<ContentValues> historicCVs = new ArrayList<>();
+        InputStream is = context.getResources().openRawResource(R.raw.dummy_data);
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+        } finally {
+            is.close();
+        }
+
+        String jsonString = writer.toString();
+        try {
+            JSONObject json = new JSONObject(jsonString);;
+            JSONObject query = json.getJSONObject("query");
+            JSONObject results = query.getJSONObject("results");
+            JSONArray quoteArray = results.getJSONArray("quote");
+            for (int i = 0; i < quoteArray.length(); i++) {
+                JSONObject quoteObject = quoteArray.getJSONObject(i);
+
+                //Get calendar
+                String dateString = quoteObject.getString("Date");
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                cal.setTime(sdf.parse(dateString));
+
+                //get closign price
+                BigDecimal closingPrice = new BigDecimal(quoteObject.getString("Close"));
+                HistoricalQuote historicalQuote = new HistoricalQuote();
+                historicalQuote.setDate(cal);
+                historicalQuote.setClose(closingPrice);
+                history.add(historicalQuote);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        ContentValues historicValue = new ContentValues();
+        StringBuilder historyBuilder = new StringBuilder();
+
+        for (HistoricalQuote it : history) {
+            historyBuilder.append(it.getDate().getTimeInMillis());//it.getCalendar().getTimeInMillis());
+            historyBuilder.append(", ");
+            historyBuilder.append(it.getClose());
+            historyBuilder.append("\n");
+        }
+        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL,
+                stock.getSymbol());
+        historicValue.put(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION,
+                context.getString(R.string.preference_graph_none_value));
+        historicValue.put(Contract.HistoricQuote.COLUMN_HISTORIC,
+                historyBuilder.toString());
+        historicCVs.add(historicValue);
+        return historicCVs;
+        //return history;
+    }
+
 
 
 

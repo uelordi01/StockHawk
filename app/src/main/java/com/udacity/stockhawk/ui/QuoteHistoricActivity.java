@@ -11,10 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.content.QuoteData;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.data.GlobalConfiguration;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.graphic.ChartHandler;
 
@@ -72,6 +74,9 @@ public class QuoteHistoricActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if(GlobalConfiguration.ENABLE_DUMMY_DATA) {
+            Toast.makeText(this,getString(R.string.error_dummy_data_option),Toast.LENGTH_LONG).show();
+        } else {
         if (id == R.id.action_settings) {
             int index = getOptionIndex(PrefUtils.getCurrentQuotesChartPref(this));
             if(index < graphOptions.length-1) {
@@ -84,6 +89,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
                 PrefUtils.setCurrentQuotesChartPref(this,mgraphSelectedOption);
                 startLoader();
             }
+        }
         return super.onOptionsItemSelected(item);
 
     }
@@ -110,13 +116,26 @@ public class QuoteHistoricActivity extends AppCompatActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
          mQuoteData = new QuoteData();
         int rowsCounted = mQuoteData.updateCursorData(data,this);
-        mgraphSelectedOption = PrefUtils.getCurrentQuotesChartPref(this);
-        int selectionIndex = getOptionIndex(mgraphSelectedOption);
-        if(selectionIndex < rowsCounted) {
+        if(rowsCounted > 0) {
+
             stockChart = new ChartHandler(getApplicationContext(),currentStockName);
-            stockChart.setData(mQuoteData.getHistoricByOption(mgraphSelectedOption), mgraphSelectedOption);
+            if(GlobalConfiguration.ENABLE_DUMMY_DATA) {
+                mgraphSelectedOption = getString(R.string.preference_graph_none_value);
+                stockChart.setData(mQuoteData.getHistoricByOption(mgraphSelectedOption), mgraphSelectedOption);
+            } else {
+                mgraphSelectedOption = PrefUtils.getCurrentQuotesChartPref(this);
+                int selectionIndex = getOptionIndex(mgraphSelectedOption);
+                if(selectionIndex < rowsCounted) {
+
+                    stockChart.setData(mQuoteData.getHistoricByOption(mgraphSelectedOption), mgraphSelectedOption);
+
+                }
+            }
             stockChart.showGraph(mGraphRootLayout);
+
         }
+
+
         updateView();
     }
 

@@ -29,7 +29,7 @@
     <string name="error_no_network">No network connectivity! Will load stock cursor when the network is available.</string>
     <string name="error_no_stocks">No stocks added! Hit the floating action button to add one.</string>
     <string name="error_status_ok"></string>
-
+    <string name="error_dummy_data_option">Dummy data activated, the filters will no longer work</string>
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">No connectivity, the data will refresh when network available.</string>
     <string name="toast_error_stock_not_found">the stock  %s is not available</string>
@@ -45,6 +45,7 @@
     <string name="preference_graph_year_value" translatable="false">y</string>
     <string name="preference_graph_month_value" translatable="false">m</string>
     <string name="preference_graph_week_value" translatable="false">w</string>
+    <string name="preference_graph_none_value" translatable="false">non</string>
 
     <string name="graph_content_descrition">Current chart</string>
     <string name="symbol_tv_text" >Quote</string>

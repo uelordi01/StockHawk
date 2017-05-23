@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.tv_error)
     TextView errorView;
     private StockAdapter adapter;
-
+    String mAddedSymbol="";
     @Override
     public void onClick(String symbol) {
 
@@ -100,19 +100,19 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRefresh() {
         QuoteSyncJob.syncImmediately(this);
-//        if (!networkUp() && adapter.getItemCount() == 0) {
-//            swipeRefreshLayout.setRefreshing(false);
-//            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
-//        } else if (!networkUp()) {
-//            swipeRefreshLayout.setRefreshing(false);
-//            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
-//        } else if (PrefUtils.getStocks(this).size() == 0) {
-//            swipeRefreshLayout.setRefreshing(false);
-//            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
-//        } else {
-//            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
-//        }
-
+        if (!networkUp() && adapter.getItemCount() == 0) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
+        } else if (!networkUp()) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
+        } else if (PrefUtils.getStocks(this).size() == 0) {
+            swipeRefreshLayout.setRefreshing(false);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_STOCK_EMPTY);
+        } else {
+            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
+        }
+        updateView();
     }
     public void button(@SuppressWarnings("UnusedParameters") View view) {
         new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
@@ -120,16 +120,16 @@ public class MainActivity extends AppCompatActivity implements
 
     void addStock(String symbol) {
         if (symbol != null && !symbol.isEmpty()) {
-
+            mAddedSymbol = symbol;
+            PrefUtils.addStock(this, symbol);
+            QuoteSyncJob.syncImmediately(this);
             if (networkUp()) {
                 swipeRefreshLayout.setRefreshing(true);
             } else {
-                String message = getString(R.string.toast_stock_added_no_connectivity, symbol);
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                PrefUtils.setErrorStatus(this,QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
             }
-            PrefUtils.addStock(this, symbol);
-            QuoteSyncJob.syncImmediately(this);
         }
+        updateView();
     }
 
     @Override
@@ -151,16 +151,11 @@ public class MainActivity extends AppCompatActivity implements
         adapter.setCursor(data);
 
         if (!networkUp() && adapter.getItemCount() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
             PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_NO_NETWORK);
         } else if (!networkUp()) {
-            swipeRefreshLayout.setRefreshing(false);
             PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
         } else if (PrefUtils.getStocks(this).size() == 0) {
-            swipeRefreshLayout.setRefreshing(false);
-            PrefUtils.setErrorStatus(this, QuoteSyncJob.TOAST_ERROR_NO_CONECTIVITY);
-        } else {
-            PrefUtils.setErrorStatus(this,QuoteSyncJob.ERROR_STATUS_OK);
+            PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_STOCK_EMPTY);
         }
         updateView();
     }
@@ -216,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             }
             case QuoteSyncJob.TOAST_ERROR_STOCK_NOT_EXIST: {
-                message = getString(R.string.toast_error_stock_not_found);
+                message = getString(R.string.toast_error_stock_not_found, mAddedSymbol);
                 showToast = true;
                 break;
             }
@@ -230,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             }
             case QuoteSyncJob.TOAST_STOCK_ADDED_NO_CONNECTIVITY:{
-                message = getString(R.string.toast_stock_added_no_connectivity);
+                message = getString(R.string.toast_stock_added_no_connectivity, mAddedSymbol);
                 showToast = true;
                 break;
             }

@@ -88,6 +88,9 @@ public class QuoteData implements Parcelable {
         }
         return null;
     }
+    public String getHistoricValues(){
+        return null;
+    }
     public int updateCursorData(Cursor data,Context context) {
         //update the basic data:
         mHistoricValues = new HashMap<>();
@@ -99,15 +102,16 @@ public class QuoteData implements Parcelable {
                 data.moveToPosition(i);
                 int symbolColumn = data.getColumnIndex(Contract.HistoricQuote.COLUMN_QUOTE_SYMBOL);
                 int intervalType = data.getColumnIndex(Contract.HistoricQuote.COLUMN_QUOTE_VIS_OPTION);
+                int historicColumn = data.getColumnIndex(Contract.HistoricQuote.COLUMN_HISTORIC);
                 int priceColumn = data.getColumnIndex(Contract.Quote.COLUMN_PRICE);
-                int perc_change =data.getColumnIndex(Contract.Quote.COLUMN_PERCENTAGE_CHANGE);
+                int perc_change = data.getColumnIndex(Contract.Quote.COLUMN_PERCENTAGE_CHANGE);
                 int abs_change =   data.getColumnIndex(Contract.Quote.COLUMN_ABSOLUTE_CHANGE);
 
                 mSymbol = data.getString(symbolColumn);
                 mPrice = data.getFloat(priceColumn);
                 mPositionPercentageChange = data.getFloat(perc_change);
                 mPositionAbsChange = data.getFloat(abs_change);
-                mHistoricValues.put(data.getString(intervalType),data.getString(symbolColumn));
+                mHistoricValues.put(data.getString(intervalType),data.getString(historicColumn));
             }
         }
         return data.getCount();
