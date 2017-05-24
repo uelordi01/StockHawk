@@ -7,8 +7,11 @@ import android.preference.PreferenceManager;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 public final class PrefUtils {
@@ -117,6 +120,26 @@ public final class PrefUtils {
         editor.putInt(c.getString(R.string.error_handling_key),locationStatus);
         editor.apply();
     }
+    public static String  formatDataToDolar(float value) {
+        DecimalFormat dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
+        return dollarFormat.format(value);
+    }
+
+    public static String formatDataToPercentage(float value) {
+        DecimalFormat percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
+        percentageFormat.setMaximumFractionDigits(2);
+        percentageFormat.setMinimumFractionDigits(2);
+        percentageFormat.setPositivePrefix("+");
+        return percentageFormat.format(value/100);
+    }
+    public static String formatDataToPlus(float value){
+        DecimalFormat dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
+        dollarFormatWithPlus.setPositivePrefix("+$");
+        return dollarFormatWithPlus.format(value);
+    }
+
+
+
 
 
 }

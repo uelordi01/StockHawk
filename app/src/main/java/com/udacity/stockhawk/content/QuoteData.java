@@ -10,24 +10,36 @@ import com.udacity.stockhawk.data.PrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by uelordi on 14/05/2017.
  */
 
 public class QuoteData implements Parcelable {
+
+
     String mSymbol;
     float mPrice;
     float mPositionAbsChange;
     float mPositionPercentageChange;
-    HashMap<String,String> mHistoricValues;
 
+    HashMap<String,String> mHistoricValues;
+    /*
+    * formatting things:
+     */
+    private DecimalFormat dollarFormat;
+    private  DecimalFormat dollarFormatWithPlus;
+    private  DecimalFormat percentageFormat;
     public QuoteData(Parcel in) {
         mSymbol = in.readString();
         mPrice = in.readFloat();
         mPositionAbsChange = in.readFloat();
         mPositionPercentageChange = in.readFloat();
+
     }
 
     public static final Creator<QuoteData> CREATOR = new Creator<QuoteData>() {
@@ -45,7 +57,7 @@ public class QuoteData implements Parcelable {
     public QuoteData() {
 
     }
-
+    
     public String getmSymbol() {
         return mSymbol;
     }
@@ -56,6 +68,9 @@ public class QuoteData implements Parcelable {
 
     public float getmPrice() {
         return mPrice;
+    }
+    public String getFormatPrice(){
+        return  dollarFormat.format(mPrice);
     }
 
     public void setmPrice(float mPrice) {
@@ -108,6 +123,7 @@ public class QuoteData implements Parcelable {
                 int abs_change =   data.getColumnIndex(Contract.Quote.COLUMN_ABSOLUTE_CHANGE);
 
                 mSymbol = data.getString(symbolColumn);
+
                 mPrice = data.getFloat(priceColumn);
                 mPositionPercentageChange = data.getFloat(perc_change);
                 mPositionAbsChange = data.getFloat(abs_change);

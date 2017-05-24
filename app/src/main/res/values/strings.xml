@@ -50,8 +50,8 @@
     <string name="graph_content_descrition">Current chart</string>
     <string name="symbol_tv_text" >Quote</string>
     <string name="price_tv_text" >Current price:</string>
-    <string name="change_perc_tv_text" >ChangePerc:</string>
-    <string name="change_abs_tv_text" >ChangeAbs:</string>
+    <string name="change_perc_tv_text" >Change Percent:</string>
+    <string name="change_abs_tv_text" >Change Abs:</string>
 <!-- service handle values -->
 <!-- ERROR HANDLING -->
     <string name="error_handling_key">error_location</string>

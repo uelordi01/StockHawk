@@ -38,19 +38,18 @@ public class QuoteHistoricActivity extends AppCompatActivity
     @BindView(R.id.tv_symbol)
     TextView mTvSymbol;
 
-//    @SuppressWarnings("WeakerAccess")
-//    @BindView(R.id.tv_change_percentage)
-//    TextView mTvChangePercentage;
-//    @SuppressWarnings("WeakerAccess")
-//    @BindView(R.id.tv_change_abs)
-//    TextView mTvChangeAbs;
-//
-//    @SuppressWarnings("WeakerAccess")
-//    @BindView(R.id.tv_price)
-//    TextView mTvPrice;
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_change_percentage)
+    TextView mTvChangePercentage;
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_change_abs)
+    TextView mTvChangeAbs;
+
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.tv_price)
+    TextView mTvPrice;
     //private static int mSelectionCounter = 0;
 
-//    LineChart mChart;
     String mgraphSelectedOption;
     private QuoteData mQuoteData;
 
@@ -156,9 +155,10 @@ public class QuoteHistoricActivity extends AppCompatActivity
     }
     private void updateView() {
         if(mQuoteData != null) {
-//            mTvPrice.setText(""+mQuoteData.getmPrice());
-//            mTvChangePercentage.setText("%"+mQuoteData.getmPositionPercentageChange());
-//            mTvChangeAbs.setText("$"+mQuoteData.getmPositionAbsChange());
+            mTvPrice.setText(PrefUtils.formatDataToDolar(mQuoteData.getmPrice()));
+            mTvChangePercentage.setText(PrefUtils.formatDataToPercentage(
+                                                mQuoteData.getmPositionPercentageChange()));
+            mTvChangeAbs.setText(PrefUtils.formatDataToPlus(mQuoteData.getmPositionAbsChange()));
             mTvSymbol.setText(""+mQuoteData.getmSymbol());
         } else {
             //TODO PUT HERE YOUR ERROR VIEW

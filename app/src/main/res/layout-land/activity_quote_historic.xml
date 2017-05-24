@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context="com.udacity.stockhawk.ui.QuoteHistoricActivity">
     <!--@BindView(R.id.symbol)-->
     <!--TextView symbol;-->
@@ -16,8 +16,8 @@
     <!--TextView change;-->
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="30">
         <TextView
             android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
 
     <FrameLayout
         android:id="@+id/historic_root_layout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="70"></FrameLayout>
 </LinearLayout>
