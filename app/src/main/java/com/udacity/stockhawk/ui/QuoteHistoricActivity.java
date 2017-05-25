@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,11 +29,10 @@ public class QuoteHistoricActivity extends AppCompatActivity
                                 implements LoaderManager.LoaderCallbacks<Cursor>{
     private String currentStockName = "";
     private static final int HISTORIC_LOADER = 2;
-    ChartHandler stockChart;
-    FrameLayout mGraphRootLayout;
-    String [] graphOptions;
-    String [] graphOptionsLabels;
-    private static final int NUMBER_OF_OPTIONS = 3;
+    private ChartHandler stockChart;
+    private FrameLayout mGraphRootLayout;
+    private String [] graphOptions;
+    private String [] graphOptionsLabels;
 
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.tv_symbol)
@@ -48,6 +48,9 @@ public class QuoteHistoricActivity extends AppCompatActivity
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.tv_price)
     TextView mTvPrice;
+    @SuppressWarnings("WeakerAccess")
+    @BindView(R.id.quote_historic_tv_error)
+    TextView mTextviewNoDataError;
     //private static int mSelectionCounter = 0;
 
     String mgraphSelectedOption;
@@ -114,7 +117,7 @@ public class QuoteHistoricActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
          mQuoteData = new QuoteData();
-        int rowsCounted = mQuoteData.updateCursorData(data,this);
+        int rowsCounted = mQuoteData.updateCursorData(data);
         if(rowsCounted > 0) {
 
             stockChart = new ChartHandler(getApplicationContext(),currentStockName);
@@ -159,9 +162,10 @@ public class QuoteHistoricActivity extends AppCompatActivity
             mTvChangePercentage.setText(PrefUtils.formatDataToPercentage(
                                                 mQuoteData.getmPositionPercentageChange()));
             mTvChangeAbs.setText(PrefUtils.formatDataToPlus(mQuoteData.getmPositionAbsChange()));
-            mTvSymbol.setText(""+mQuoteData.getmSymbol());
+            mTvSymbol.setText(getString(R.string.format_historic_textview_string,mQuoteData.getmSymbol()));
+            mTextviewNoDataError.setVisibility(View.GONE);
         } else {
-            //TODO PUT HERE YOUR ERROR VIEW
+            mTextviewNoDataError.setVisibility(View.VISIBLE);
         }
 
     }

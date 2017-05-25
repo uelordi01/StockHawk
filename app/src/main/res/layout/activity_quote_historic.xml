@@ -109,6 +109,13 @@
             style="@style/DetailActivityTextviewStyle"
             android:layout_marginTop="@dimen/historic_textview_margin"
             />
+        <TextView
+            android:id="@+id/quote_historic_tv_error"
+            android:text="@string/historic_data_not_found"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+          />
 </android.support.constraint.ConstraintLayout>
 
     <FrameLayout

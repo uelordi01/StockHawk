@@ -8,14 +8,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
-import com.udacity.stockhawk.ui.MainActivity;
 import com.udacity.stockhawk.ui.QuoteHistoricActivity;
 
 /**

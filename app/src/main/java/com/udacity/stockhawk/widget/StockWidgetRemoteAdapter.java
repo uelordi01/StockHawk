@@ -1,7 +1,6 @@
 package com.udacity.stockhawk.widget;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,8 +22,8 @@ import java.util.Locale;
 
 public class StockWidgetRemoteAdapter implements
         RemoteViewsService.RemoteViewsFactory {
-    Cursor data;
-    int mWidgetId;
+    private Cursor data;
+    private final  int mWidgetId;
     private final Context context;
     private final DecimalFormat dollarFormatWithPlus;
     private final DecimalFormat dollarFormat;

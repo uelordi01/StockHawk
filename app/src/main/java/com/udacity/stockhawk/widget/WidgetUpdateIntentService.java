@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -34,6 +33,7 @@ public class WidgetUpdateIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         Context context = getApplicationContext();
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
+        assert intent != null;
         int appWidgetIds[] = intent.getIntArrayExtra(
                 context.getString(Integer.parseInt(appWidgetManager.ACTION_APPWIDGET_ENABLED)));
 

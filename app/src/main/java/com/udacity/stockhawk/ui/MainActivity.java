@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.tv_error)
     TextView errorView;
     private StockAdapter adapter;
-    String mAddedSymbol="";
+    private String mAddedSymbol="";
     @Override
     public void onClick(String symbol) {
 

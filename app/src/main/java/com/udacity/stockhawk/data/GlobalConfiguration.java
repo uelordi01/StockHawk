@@ -5,6 +5,6 @@ package com.udacity.stockhawk.data;
  */
 
 public class GlobalConfiguration {
-    public static boolean ENABLE_HISTORIC = true;
-    public static boolean ENABLE_DUMMY_DATA = true;
+    public static final boolean ENABLE_HISTORIC = true;
+    public static final boolean ENABLE_DUMMY_DATA = true;
 }

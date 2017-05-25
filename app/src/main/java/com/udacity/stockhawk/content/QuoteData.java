@@ -6,14 +6,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
-
 import org.jetbrains.annotations.NotNull;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Locale;
+
 
 /**
  * Created by uelordi on 14/05/2017.
@@ -22,18 +17,15 @@ import java.util.Locale;
 public class QuoteData implements Parcelable {
 
 
-    String mSymbol;
-    float mPrice;
-    float mPositionAbsChange;
-    float mPositionPercentageChange;
+    private String mSymbol;
+    private float mPrice;
+    private float mPositionAbsChange;
+    private float mPositionPercentageChange;
 
-    HashMap<String,String> mHistoricValues;
+    private HashMap<String,String> mHistoricValues;
     /*
     * formatting things:
      */
-    private DecimalFormat dollarFormat;
-    private  DecimalFormat dollarFormatWithPlus;
-    private  DecimalFormat percentageFormat;
     public QuoteData(Parcel in) {
         mSymbol = in.readString();
         mPrice = in.readFloat();
@@ -69,9 +61,6 @@ public class QuoteData implements Parcelable {
     public float getmPrice() {
         return mPrice;
     }
-    public String getFormatPrice(){
-        return  dollarFormat.format(mPrice);
-    }
 
     public void setmPrice(float mPrice) {
         this.mPrice = mPrice;
@@ -103,10 +92,7 @@ public class QuoteData implements Parcelable {
         }
         return null;
     }
-    public String getHistoricValues(){
-        return null;
-    }
-    public int updateCursorData(Cursor data,Context context) {
+    public int updateCursorData(Cursor data) {
         //update the basic data:
         mHistoricValues = new HashMap<>();
 

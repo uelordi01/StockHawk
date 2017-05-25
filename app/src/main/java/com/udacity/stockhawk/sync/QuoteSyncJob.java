@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -37,15 +36,10 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import timber.log.Timber;
-//import yahoofinance.Stock;
-//import yahoofinance.YahooFinance;
-//import yahoofinance.histquotes.HistoricalQuote;
-//import yahoofinance.histquotes.Interval;
-//import yahoofinance.quotes.stock.StockQuote;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
@@ -60,7 +54,6 @@ public final class QuoteSyncJob {
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
-    private static final int YEARS_OF_HISTORY = 1;
     // this is a debug flag remove to distribution
 
     //annotations of the resulting queries
@@ -73,7 +66,7 @@ public final class QuoteSyncJob {
         TOAST_ERROR_NO_CONECTIVITY,
         TOAST_STOCK_ADDED_NO_CONNECTIVITY
     })
-    public  @interface locationErrorStatus{};
+    public  @interface locationErrorStatus{}
 
     public static final int ERROR_STATUS_OK = 0;
     public static final int ERROR_STOCK_EMPTY = 1;
@@ -218,12 +211,9 @@ public final class QuoteSyncJob {
         }
     }
     private static boolean isTheQuerySafe(StockQuote quote) {
-        if(quote.getPrice() != null &&
+        return quote.getPrice() != null &&
                 quote.getChange() != null &&
-                quote.getChangeInPercent()!= null ) {
-            return true;
-        }
-        return false;
+                quote.getChangeInPercent() != null;
     }
     private static ArrayList<ContentValues> getHistoricFromStock(
                                                                  Stock stock,
@@ -264,22 +254,19 @@ public final class QuoteSyncJob {
 
         List<HistoricalQuote> history = new ArrayList<>();
         ArrayList<ContentValues> historicCVs = new ArrayList<>();
-        InputStream is = context.getResources().openRawResource(R.raw.dummy_data);
         Writer writer = new StringWriter();
         char[] buffer = new char[1024];
-        try {
+        try (InputStream is = context.getResources().openRawResource(R.raw.dummy_data)) {
             Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
             int n;
             while ((n = reader.read(buffer)) != -1) {
                 writer.write(buffer, 0, n);
             }
-        } finally {
-            is.close();
         }
 
         String jsonString = writer.toString();
         try {
-            JSONObject json = new JSONObject(jsonString);;
+            JSONObject json = new JSONObject(jsonString);
             JSONObject query = json.getJSONObject("query");
             JSONObject results = query.getJSONObject("results");
             JSONArray quoteArray = results.getJSONArray("quote");
@@ -289,7 +276,7 @@ public final class QuoteSyncJob {
                 //Get calendar
                 String dateString = quoteObject.getString("Date");
                 Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                 cal.setTime(sdf.parse(dateString));
 
                 //get closign price
@@ -300,9 +287,7 @@ public final class QuoteSyncJob {
                 history.add(historicalQuote);
 
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
 

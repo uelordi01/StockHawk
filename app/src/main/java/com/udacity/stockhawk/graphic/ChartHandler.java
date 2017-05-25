@@ -15,23 +15,21 @@ import com.udacity.stockhawk.R;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Timestamp;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by uelordi on 08/05/2017.
  */
 
 public class ChartHandler {
-    LineChart mChart;
-    String mChartName;
-    static String mIntervalTime;
-    String [] optionList;
-    Context mContext;
+    private LineChart mChart;
+    private final String  mChartName;
+    private static String mIntervalTime;
+    private Context mContext;
 
     public ChartHandler(Context context, String chartName) {
         mChart = new LineChart(context);
@@ -67,7 +65,7 @@ public class ChartHandler {
 
     }
     private   void addData(String parseString) {
-        ArrayList<Entry> values = new ArrayList<Entry>();
+        ArrayList<Entry> values = new ArrayList<>();
 
 
         String[] rows = parseString.split("\n");
@@ -104,14 +102,14 @@ public class ChartHandler {
         mChart.invalidate();
     }
 
-    private String getDateFromTimestamp(@NotNull long timestamp,@NotNull Context context,
-                                               @NotNull String option) {
+    private String getDateFromTimestamp(long timestamp, @NotNull Context context,
+                                        @NotNull String option) {
             final  String[] months = new DateFormatSymbols().getMonths();
             Calendar cal = Calendar.getInstance();
             String message ="";
             cal.setTimeInMillis(timestamp);
             if(option.equals(context.getString(R.string.preference_graph_year_value))) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+                SimpleDateFormat sdf = new SimpleDateFormat("yy", Locale.UK); // Just the year, with 2 digits
                 String formattedDate = sdf.format(timestamp);
                 message = months[ cal.get(Calendar.MONTH)].substring(0,3) + formattedDate;
                 //message =  +" "+ cal.get(Calendar.YEAR);

@@ -57,9 +57,6 @@ public final class Contract {
         public static final String COLUMN_HISTORIC = "historic_dataset";
         public static final String COLUMN_QUOTE_VIS_OPTION = "quote_vis_option";
         public static final String COLUMN_QUOTE_SYMBOL ="quote_symbol";
-        public static final int POSITION_SYMBOL_ID = 0;
-        public static final int POSITION_QUOTE_INTERVAL = 1;
-        public static final int POSITION_HISTORIC_DATASET = 2;
         static final String TABLE_NAME = "historic_data";
         public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 COLUMN_QUOTE_SYMBOL,
@@ -77,7 +74,4 @@ public final class Contract {
             return queryUri.getLastPathSegment();
         }
     }
-    public static final ImmutableList<String> COMPLETE_QUOTES_HISTORIC_COLUMNS =
-            ImmutableList.of(
-            );
 }
