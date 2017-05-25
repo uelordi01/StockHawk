@@ -19,17 +19,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="30">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/symbol_tv_text"
-            tools:text="@string/symbol_tv_text"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/historic_textview_margin"
-            android:id="@+id/tv_symbol_def"
-            android:layout_marginStart="@dimen/historic_textview_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            style="@style/DetailActivityTextStaticStyle"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/symbol_tv_text"-->
+            <!--tools:text="@string/symbol_tv_text"-->
+            <!--app:layout_constraintTop_toTopOf="parent"-->
+            <!--android:layout_marginTop="@dimen/historic_textview_margin"-->
+            <!--android:id="@+id/tv_symbol_def"-->
+            <!--android:layout_marginStart="@dimen/historic_textview_margin"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--style="@style/DetailActivityTextStaticStyle"/>-->
 
         <TextView
             android:id="@+id/tv_symbol"
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_symbol_def"
+            app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/DetailActivityTextviewStyle"
             android:layout_marginTop="@dimen/historic_textview_margin"/>
@@ -45,7 +45,7 @@
             android:id="@+id/tv_pricel_def"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_symbol_def"
+            app:layout_constraintTop_toBottomOf="@+id/tv_symbol"
             android:layout_marginStart="@dimen/historic_textview_margin"
             android:layout_marginTop="@dimen/historic_textview_margin"
             app:layout_constraintStart_toStartOf="parent"

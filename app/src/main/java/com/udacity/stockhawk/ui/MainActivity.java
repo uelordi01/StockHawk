@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements
     TextView errorView;
     private StockAdapter adapter;
     private String mAddedSymbol="";
+    private Parcelable mListState;
     @Override
     public void onClick(String symbol) {
 
@@ -53,6 +55,23 @@ public class MainActivity extends AppCompatActivity implements
         Intent historicAct = new Intent(this, QuoteHistoricActivity.class);
         historicAct.putExtra(getString(R.string.pref_stocks_key),symbol);
         startActivity(historicAct);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mListState = stockRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(getString(R.string.
+                        stock_list_view_index),mListState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState != null) {
+            mListState = savedInstanceState.
+                    getParcelable(getString(R.string.stock_list_view_index));
+        }
     }
 
     @Override
@@ -68,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements
 
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setRefreshing(true);
+        if(savedInstanceState != null ) {
+
+        }
         //onRefresh();
 
         QuoteSyncJob.initialize(this);
@@ -160,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements
             PrefUtils.setErrorStatus(this, QuoteSyncJob.ERROR_STOCK_EMPTY);
         }
         updateView();
+        stockRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
     }
 
 

@@ -76,21 +76,22 @@ public class QuoteHistoricActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(GlobalConfiguration.ENABLE_DUMMY_DATA) {
-            Toast.makeText(this,getString(R.string.error_dummy_data_option),Toast.LENGTH_LONG).show();
-        } else {
+
         if (id == R.id.action_settings) {
-            int index = getOptionIndex(PrefUtils.getCurrentQuotesChartPref(this));
-            if(index < graphOptions.length-1) {
-                 index++;
-            } else {
-                index = 0;
-            }
-                mgraphSelectedOption = graphOptions[index];
-                item.setTitle(graphOptionsLabels[index]);
-                PrefUtils.setCurrentQuotesChartPref(this,mgraphSelectedOption);
-                startLoader();
-            }
+            if(GlobalConfiguration.ENABLE_DUMMY_DATA) {
+                Toast.makeText(this,getString(R.string.error_dummy_data_option),Toast.LENGTH_SHORT).show();
+                } else {
+                    int index = getOptionIndex(PrefUtils.getCurrentQuotesChartPref(this));
+                    if (index < graphOptions.length - 1) {
+                        index++;
+                    } else {
+                        index = 0;
+                    }
+                    mgraphSelectedOption = graphOptions[index];
+                    item.setTitle(graphOptionsLabels[index]);
+                    PrefUtils.setCurrentQuotesChartPref(this, mgraphSelectedOption);
+                    startLoader();
+                }
         }
         return super.onOptionsItemSelected(item);
 

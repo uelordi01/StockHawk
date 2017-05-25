@@ -7,4 +7,6 @@
     <dimen name="widget_title_text_size">20dp</dimen>
     <dimen name="historic_textview_margin">12dp</dimen>
     <dimen name="detail_graph_text_size">20dp</dimen>
+    <dimen name="list_tiny_distance_size">3dp</dimen>
+    <dimen name="list_big_distance_size">16dp</dimen>
 </resources>

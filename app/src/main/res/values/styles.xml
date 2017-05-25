@@ -14,11 +14,13 @@
 
     <style name="BidPriceTextStyle">
         <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginEnd">10sp</item>
     </style>
 
     <style name="StockSymbolTextStyle">
         <item name="android:textSize">25sp</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
     </style>
     <style name="StockWidgetSymbolTextStyle">
         <item name="android:textSize">@dimen/widget_text_size</item>
@@ -29,7 +31,6 @@
         <item name="android:textColor">#FFF</item>
         <item name="android:textStyle">bold</item>
     </style>
-
     <style name="WidgetPriceTextStyle">
         <item name="android:textSize">@dimen/widget_text_size</item>
     </style>

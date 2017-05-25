@@ -48,7 +48,7 @@
     <string name="graph_content_descrition">Current chart</string>
     <string name="symbol_tv_text" >Quote</string>
     <string name="price_tv_text" >Current price</string>
-    <string name="change_perc_tv_text" >Change Percent</string>
+    <string name="change_perc_tv_text" >Change Perc</string>
     <string name="change_abs_tv_text" >Change Abs</string>
 <!-- service handle values -->
 <!-- ERROR HANDLING -->
@@ -61,4 +61,6 @@
     <!-- QuoteHistoricActivity -->
     <string name="format_historic_textview_string">%s</string>
     <string name="historic_data_not_found">The historic data not found</string>
+    <!-- Listview variable-->
+    <string name="stock_list_view_index">stock_list_view_index</string>
 </resources>
