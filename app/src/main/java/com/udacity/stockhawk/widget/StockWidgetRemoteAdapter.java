@@ -94,7 +94,6 @@ public class StockWidgetRemoteAdapter implements
                 String symbol = data.getString(symbolColumn);
                 String priceValue = dollarFormat.format(priceRaw);
                 String percentageValue =percentageFormat.format(percentageRaw);
-                int color;
                 if(absChangeRaw > 0 ) {
                     views.setInt(R.id.tv_widget_stock_change_percentage,
                             "setBackgroundResource",
