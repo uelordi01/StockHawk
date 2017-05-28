@@ -107,8 +107,6 @@ public class QuoteHistoricActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // String    symbol = args.getString(getString(R.string.pref_stocks_key));
-        //return null;
         return new CursorLoader(this,
                 Contract.HistoricQuote.makeUriForQuotes(currentStockName),
                 Contract.HistoricQuote.QUOTE_COLUMNS.toArray(new String[]{}),

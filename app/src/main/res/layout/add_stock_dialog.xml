@@ -12,6 +12,7 @@
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginTop="16dp"
+        android:digits="@string/add_stock_input_constraint"
         android:hint="@string/dialog_hint"
         android:inputType="textCapCharacters" />
 

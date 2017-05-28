@@ -6,11 +6,11 @@
     <string name="pref_stocks_key" translatable="false">stocks</string>
 
 
-    <string name="pref_display_mode_key">displayMode</string>
+    <string name="pref_display_mode_key" translatable="false" >displayMode</string>
     <string name="pref_display_mode_default">@string/pref_display_mode_percentage_key</string>
 
-    <string name="pref_display_mode_absolute_key">absolute</string>
-    <string name="pref_display_mode_percentage_key">percentage</string>
+    <string name="pref_display_mode_absolute_key" translatable="false">absolute</string>
+    <string name="pref_display_mode_percentage_key" translatable="false">percentage</string>
 
     <string name="default_stocks_yahoo">YHOO</string>
     <string name="default_stocks_apple">AAPL</string>
@@ -52,7 +52,7 @@
     <string name="change_abs_tv_text" >Change Abs</string>
 <!-- service handle values -->
 <!-- ERROR HANDLING -->
-    <string name="error_handling_key">error_location</string>
+    <string name="error_handling_key" translatable="false">error_location</string>
 <!-- widget values -->
     <string name="widget_title">Stock Hawk</string>
     <!--<string name="widget_id_array_key" translatable="false">widgetid_array</string>-->
@@ -62,5 +62,7 @@
     <string name="format_historic_textview_string">%s</string>
     <string name="historic_data_not_found">The historic data not found</string>
     <!-- Listview variable-->
-    <string name="stock_list_view_index">stock_list_view_index</string>
+    <string name="stock_list_view_index" translatable="false">stock_list_view_index</string>
+
+    <string name="add_stock_input_constraint" translatable="false">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 </resources>
